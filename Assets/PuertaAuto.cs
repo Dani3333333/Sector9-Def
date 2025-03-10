@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Puerta : MonoBehaviour
+public class PuertaAuto : MonoBehaviour
 {
+    
     public float speed;
     public float moveDistance; // Distancia que se moverá la puerta hacia arriba
     private Vector3 initialPosition;
     private Vector3 targetPosition;
     private bool isOpen = false;
-    public bool puedeAbrir;
 
     void Start()
     {
@@ -19,11 +19,6 @@ public class Puerta : MonoBehaviour
 
     void Update()
     {
-        if (puedeAbrir && Input.GetKeyDown(KeyCode.E)) 
-        {
-            isOpen = !isOpen; // Alterna entre abierto y cerrado
-        }
-
         if (isOpen)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
@@ -34,11 +29,11 @@ public class Puerta : MonoBehaviour
         }
     }
 
-    void OnTriggerStay(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            puedeAbrir = true;
+            isOpen = true; // Abre la puerta cuando detecta al jugador
         }
     }
 
@@ -46,7 +41,8 @@ public class Puerta : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            puedeAbrir = false;
+            isOpen = false; // Cierra la puerta cuando el jugador sale del área
         }
     }
+
 }
