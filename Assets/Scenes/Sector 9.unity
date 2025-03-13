@@ -1460,7 +1460,7 @@ RectTransform:
   m_GameObject: {fileID: 450894890}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.51, y: 2.51, z: 2.51}
+  m_LocalScale: {x: 1.33, y: 1.33, z: 1.33}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 580857992}
@@ -1468,7 +1468,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 27.2, y: 0}
+  m_AnchoredPosition: {x: 3, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &450894892
@@ -1552,7 +1552,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 450894892}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 803679073}
+        m_TargetAssemblyTypeName: InspectionManager, Assembly-CSharp
+        m_MethodName: ShowItems
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Torso
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &490355663
 GameObject:
   m_ObjectHideFlags: 0
@@ -2386,10 +2398,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   extremityPanel: {fileID: 1307536014}
   itemsPanel: {fileID: 363628254}
-  itemsText: {fileID: 934197596}
-  armButton: {fileID: 1324125328}
-  torsoButton: {fileID: 450894894}
-  legButton: {fileID: 1674401742}
+  itemsText: {fileID: 0}
+  extremityButtons: []
 --- !u!4 &803679074
 Transform:
   m_ObjectHideFlags: 0
@@ -2470,7 +2480,7 @@ GameObject:
   - component: {fileID: 856038242}
   m_Layer: 0
   m_Name: Prisionero prototipo
-  m_TagString: Untagged
+  m_TagString: Prisionero
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2514,7 +2524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad766fa8dec304045be6ce674ef312a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inspectionPanel: {fileID: 0}
+  inspectionPanel: {fileID: 1307536014}
 --- !u!136 &856038244
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -3891,7 +3901,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1307536015
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3901,8 +3911,8 @@ RectTransform:
   m_GameObject: {fileID: 1307536014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.74, y: 0.74, z: 0.74}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1324125325}
   - {fileID: 450894891}
@@ -3978,17 +3988,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1324125324}
-  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.51, y: 2.51, z: 2.51}
+  m_LocalScale: {x: 1.33, y: 1.33, z: 1.33}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 214599742}
   m_Father: {fileID: 1307536015}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -395, y: 0}
+  m_AnchoredPosition: {x: -258, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1324125326
@@ -4072,7 +4082,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1324125326}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 803679073}
+        m_TargetAssemblyTypeName: InspectionManager, Assembly-CSharp
+        m_MethodName: ShowItems
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Brazos
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1336046525
 GameObject:
   m_ObjectHideFlags: 0
@@ -5083,7 +5105,7 @@ RectTransform:
   m_GameObject: {fileID: 1674401740}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.51, y: 2.51, z: 2.51}
+  m_LocalScale: {x: 1.33, y: 1.33, z: 1.33}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 962391023}
@@ -5091,7 +5113,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 462, y: 0}
+  m_AnchoredPosition: {x: 259, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1674401742
@@ -5137,7 +5159,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1674401743}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 803679073}
+        m_TargetAssemblyTypeName: InspectionManager, Assembly-CSharp
+        m_MethodName: ShowItems
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Piernas
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1674401743
 MonoBehaviour:
   m_ObjectHideFlags: 0
