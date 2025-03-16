@@ -9,6 +9,8 @@ public class LogicaPersonaje1 : MonoBehaviour
     private bool isGrounded;
     public Transform cameraTransform; // Referencia a la cámara
 
+    public static bool isInspecting = false; // Variable para bloquear movimiento
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -17,17 +19,24 @@ public class LogicaPersonaje1 : MonoBehaviour
 
     void Update()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-
-        // Mueve el personaje en la dirección en la que mira la cámara
-        Vector3 move = cameraTransform.forward * moveZ + cameraTransform.right * moveX;
-        move.y = 0; // Evita que el personaje se mueva en el eje Y
-        rb.velocity = move.normalized * speed + new Vector3(0, rb.velocity.y, 0);
-
-        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+        if (!isInspecting) // SOLO SE MUEVE SI NO ESTÁ INSPECCIONANDO
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            float moveX = Input.GetAxis("Horizontal");
+            float moveZ = Input.GetAxis("Vertical");
+
+            // Mueve el personaje en la dirección en la que mira la cámara
+            Vector3 move = cameraTransform.forward * moveZ + cameraTransform.right * moveX;
+            move.y = 0; // Evita que el personaje se mueva en el eje Y
+            rb.velocity = move.normalized * speed + new Vector3(0, rb.velocity.y, 0);
+
+            if (isGrounded && Input.GetKeyDown(KeyCode.Space))
+            {
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            }
+        }
+        else
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0); // Evita que se mueva si está inspeccionando
         }
     }
 

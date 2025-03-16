@@ -502,7 +502,7 @@ RectTransform:
   m_Children:
   - {fileID: 1307536015}
   - {fileID: 363628255}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 803679074}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1553,7 +1553,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 803679073}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InspectionManager, Assembly-CSharp
         m_MethodName: ShowItems
         m_Mode: 5
@@ -2376,7 +2376,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 803679074}
-  - component: {fileID: 803679073}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -2384,22 +2383,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &803679073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 803679072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1be794a5996631f4184574c09497aa9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  extremityPanel: {fileID: 1307536014}
-  itemsPanel: {fileID: 363628254}
-  itemsText: {fileID: 0}
-  extremityButtons: []
 --- !u!4 &803679074
 Transform:
   m_ObjectHideFlags: 0
@@ -2412,7 +2395,9 @@ Transform:
   m_LocalPosition: {x: 665.8636, y: 425.61255, z: -69.61872}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 162369981}
+  - {fileID: 1415518762}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
@@ -4083,7 +4068,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 803679073}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InspectionManager, Assembly-CSharp
         m_MethodName: ShowItems
         m_Mode: 5
@@ -4612,12 +4597,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1415518759}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -665.8636, y: -425.61255, z: 69.61872}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 803679074}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1422228493
 GameObject:
@@ -5160,7 +5145,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 803679073}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InspectionManager, Assembly-CSharp
         m_MethodName: ShowItems
         m_Mode: 5
@@ -6330,6 +6315,7 @@ GameObject:
   - component: {fileID: 2089911187}
   - component: {fileID: 2089911191}
   - component: {fileID: 2089911192}
+  - component: {fileID: 2089911193}
   m_Layer: 0
   m_Name: Personaje prototipo
   m_TagString: Player
@@ -6469,6 +6455,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2089911193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2089911186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be794a5996631f4184574c09497aa9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extremityPanel: {fileID: 1307536014}
+  itemsPanel: {fileID: 363628254}
+  itemsText: {fileID: 934197596}
+  armButton: {fileID: 1324125328}
+  torsoButton: {fileID: 450894894}
+  legButton: {fileID: 1674401742}
 --- !u!1 &2121134438
 GameObject:
   m_ObjectHideFlags: 0
@@ -6689,6 +6693,4 @@ SceneRoots:
   - {fileID: 2089911190}
   - {fileID: 2086520605}
   - {fileID: 856038247}
-  - {fileID: 162369981}
-  - {fileID: 1415518762}
   - {fileID: 803679074}

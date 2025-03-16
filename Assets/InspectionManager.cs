@@ -1,87 +1,151 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.EventSystems; // Necesario para seleccionar botones
 
 public class InspectionManager : MonoBehaviour
 {
-    public GameObject extremityPanel; // Panel de selección de extremidades
-    public GameObject itemsPanel; // Panel donde se mostrarán los objetos
-    public TextMeshProUGUI itemsText; // Texto donde se listarán los objetos
-    public Button[] extremityButtons; // Lista de botones (brazos, torso, piernas)
+    public GameObject extremityPanel;
+    public GameObject itemsPanel;
+    public Text itemsText;
 
-    private int selectedButtonIndex = 0; // Índice del botón seleccionado
-    private bool isInspecting = false; // Si estamos inspeccionando
+    public Button armButton, torsoButton, legButton;
+
+    private Dictionary<string, List<string>> extremitiesItems = new Dictionary<string, List<string>>();
+    private List<Button> buttons = new List<Button>();
+    private int selectedButtonIndex = 0;
+    private bool isInspecting = false;
+    private bool nearPrisoner = false; // Para detectar si estamos cerca del prisionero
+
+    private List<string> possibleItems = new List<string>
+    {
+        "Cuchillo", "Mechero", "Revista", "Llave", "Celular", "Papel", "Navaja", "Bolígrafo", "Encendedor"
+    };
+
+    private HashSet<string> dangerousItems = new HashSet<string> { "Cuchillo", "Navaja", "Llave" };
+
+    void Start()
+    {
+        GenerateRandomItems();
+
+        // Guardamos los botones en una lista
+        buttons.Add(armButton);
+        buttons.Add(torsoButton);
+        buttons.Add(legButton);
+
+        // Vinculamos botones con sus funciones
+        armButton.onClick.AddListener(() => ShowItems("Brazos"));
+        torsoButton.onClick.AddListener(() => ShowItems("Torso"));
+        legButton.onClick.AddListener(() => ShowItems("Piernas"));
+
+        extremityPanel.SetActive(false);
+        itemsPanel.SetActive(false);
+    }
 
     void Update()
     {
-        // Si presionamos "E" y no estamos inspeccionando, mostramos el panel
-        if (Input.GetKeyDown(KeyCode.E) && !isInspecting)
+        // Activar inspección si estamos cerca del prisionero y presionamos E
+        if (Input.GetKeyDown(KeyCode.E) && nearPrisoner && !isInspecting)
         {
             OpenExtremityPanel();
         }
 
-        // Si el panel está activo, permitir la navegación con teclado
+        // Control de navegación por teclado cuando el panel está activo
         if (extremityPanel.activeSelf)
         {
             HandleKeyboardNavigation();
         }
+
+        // Cerrar los paneles con ESC
+        if (Input.GetKeyDown(KeyCode.Escape) && isInspecting)
+        {
+            ClosePanels();
+        }
     }
 
-    // Función para abrir el panel de selección
     void OpenExtremityPanel()
     {
-        extremityPanel.SetActive(true); // Mostrar panel
-        itemsPanel.SetActive(false); // Ocultar panel de objetos
-        selectedButtonIndex = 0; // Seleccionar el primer botón
-        UpdateButtonSelection();
-        isInspecting = true; // Ahora estamos inspeccionando
+        extremityPanel.SetActive(true);
+        LogicaPersonaje1.isInspecting = true; // Bloqueamos movimiento
     }
 
-    // Función para manejar la navegación con el teclado
+    void ClosePanels()
+    {
+        extremityPanel.SetActive(false);
+        itemsPanel.SetActive(false);
+        LogicaPersonaje1.isInspecting = false; // Reactivamos movimiento
+    }
+
     void HandleKeyboardNavigation()
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            selectedButtonIndex = (selectedButtonIndex + 1) % extremityButtons.Length;
-            UpdateButtonSelection();
+            selectedButtonIndex = (selectedButtonIndex + 1) % buttons.Count;
+            SelectButton(buttons[selectedButtonIndex]);
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            selectedButtonIndex = (selectedButtonIndex - 1 + extremityButtons.Length) % extremityButtons.Length;
-            UpdateButtonSelection();
+            selectedButtonIndex = (selectedButtonIndex - 1 + buttons.Count) % buttons.Count;
+            SelectButton(buttons[selectedButtonIndex]);
         }
-        else if (Input.GetKeyDown(KeyCode.Return)) // Si presionamos ENTER
+        else if (Input.GetKeyDown(KeyCode.Return)) // Enter para aceptar
         {
-            extremityButtons[selectedButtonIndex].onClick.Invoke(); // Simular clic en el botón seleccionado
+            buttons[selectedButtonIndex].onClick.Invoke();
         }
     }
 
-    // Función para actualizar la selección visual del botón
-    void UpdateButtonSelection()
+    void SelectButton(Button button)
     {
-        for (int i = 0; i < extremityButtons.Length; i++)
-        {
-            ColorBlock colors = extremityButtons[i].colors;
-            colors.normalColor = (i == selectedButtonIndex) ? Color.yellow : Color.white;
-            extremityButtons[i].colors = colors;
-        }
+        EventSystem.current.SetSelectedGameObject(button.gameObject);
     }
 
-    // Función para mostrar los objetos de una extremidad
-    public void ShowItems(string extremity)
+    private void GenerateRandomItems()
     {
-        extremityPanel.SetActive(false); // Ocultar panel de selección
-        itemsPanel.SetActive(true); // Mostrar panel de objetos
-        itemsText.text = $"Objetos en {extremity}:\n";
+        extremitiesItems["Brazos"] = GetRandomItems();
+        extremitiesItems["Torso"] = GetRandomItems();
+        extremitiesItems["Piernas"] = GetRandomItems();
+    }
 
-        string[] possibleItems = { "Cuchillo", "Mechero", "Revista", "Móvil", "Llaves" };
-        int itemCount = Random.Range(2, 4); // 2 o 3 objetos aleatorios
+    private List<string> GetRandomItems()
+    {
+        List<string> items = new List<string>();
+        int itemCount = Random.Range(2, 4);
 
         for (int i = 0; i < itemCount; i++)
         {
-            string item = possibleItems[Random.Range(0, possibleItems.Length)];
-            string color = (item == "Cuchillo" || item == "Móvil") ? "<color=red>" : "<color=green>";
+            items.Add(possibleItems[Random.Range(0, possibleItems.Count)]);
+        }
+
+        return items;
+    }
+
+    public void ShowItems(string extremity)
+    {
+        itemsPanel.SetActive(true);
+        extremityPanel.SetActive(false);
+        itemsText.text = $"Objetos en {extremity}:\n";
+
+        foreach (var item in extremitiesItems[extremity])
+        {
+            string color = dangerousItems.Contains(item) ? "<color=red>" : "<color=green>";
             itemsText.text += $"{color}{item}</color>\n";
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Prisionero"))
+        {
+            nearPrisoner = true;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Prisionero"))
+        {
+            nearPrisoner = false;
         }
     }
 }
