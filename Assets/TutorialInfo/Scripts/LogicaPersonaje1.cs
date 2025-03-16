@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class LogicaPersonaje1 : MonoBehaviour
 {
@@ -7,9 +7,7 @@ public class LogicaPersonaje1 : MonoBehaviour
     public float gravity = 9.81f;
     private Rigidbody rb;
     private bool isGrounded;
-    public Transform cameraTransform; // Referencia a la cámara
-
-    public static bool isInspecting = false; // 🔹 Variable para bloquear movimiento
+    public Transform cameraTransform; // Referencia a la c�mara
 
     void Start()
     {
@@ -19,24 +17,17 @@ public class LogicaPersonaje1 : MonoBehaviour
 
     void Update()
     {
-        if (!isInspecting) // 🔹 SOLO SE MUEVE SI NO ESTÁ INSPECCIONANDO
-        {
-            float moveX = Input.GetAxis("Horizontal");
-            float moveZ = Input.GetAxis("Vertical");
+        float moveX = Input.GetAxis("Horizontal");
+        float moveZ = Input.GetAxis("Vertical");
 
-            // Mueve el personaje en la dirección en la que mira la cámara
-            Vector3 move = cameraTransform.forward * moveZ + cameraTransform.right * moveX;
-            move.y = 0; // Evita que el personaje se mueva en el eje Y
-            rb.velocity = move.normalized * speed + new Vector3(0, rb.velocity.y, 0);
+        // Mueve el personaje en la direcci�n en la que mira la c�mara
+        Vector3 move = cameraTransform.forward * moveZ + cameraTransform.right * moveX;
+        move.y = 0; // Evita que el personaje se mueva en el eje Y
+        rb.velocity = move.normalized * speed + new Vector3(0, rb.velocity.y, 0);
 
-            if (isGrounded && Input.GetKeyDown(KeyCode.Space))
-            {
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            }
-        }
-        else
+        if (isGrounded && Input.GetKeyDown(KeyCode.Space))
         {
-            rb.velocity = new Vector3(0, rb.velocity.y, 0); // 🔹 Evita que se mueva si está inspeccionando
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
     }
 

@@ -1,30 +1,25 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class InspectionManager : MonoBehaviour
 {
-    public GameObject extremityPanel; // Panel de selección de extremidades
-    public GameObject itemsPanel; // Panel donde se mostrará la lista de objetos
-    public Text itemsText; // Texto que mostrará los objetos
+    public GameObject extremityPanel; // Panel de selecci�n de extremidades
+    public GameObject itemsPanel; // Panel donde se mostrar� la lista de objetos
+    public Text itemsText; // Texto que mostrar� los objetos
 
     public Button armButton, torsoButton, legButton; // Botones de extremidades
-    private Button[] extremityButtons;
-    private int selectedButtonIndex = 0;
 
     private Dictionary<string, List<string>> extremitiesItems = new Dictionary<string, List<string>>();
 
     private List<string> possibleItems = new List<string>
     {
-        "Cuchillo", "Mechero", "Revista", "Llave", "Celular", "Papel", "Navaja", "Bolígrafo", "Encendedor"
+        "Cuchillo", "Mechero", "Revista", "Llave", "Celular", "Papel", "Navaja", "Bol�grafo", "Encendedor"
     };
 
     private HashSet<string> dangerousItems = new HashSet<string> { "Cuchillo", "Navaja", "Llave" };
-
-    private bool nearPrisoner = false; // Para saber si el jugador está cerca del prisionero
-    private bool isInspecting = false; // Para saber si está inspeccionando
 
     void Start()
     {
@@ -34,35 +29,8 @@ public class InspectionManager : MonoBehaviour
         armButton.onClick.AddListener(() => ShowItems("Brazos"));
         torsoButton.onClick.AddListener(() => ShowItems("Torso"));
         legButton.onClick.AddListener(() => ShowItems("Piernas"));
-
-        // Guardamos los botones en un array para movernos con las flechas
-        extremityButtons = new Button[] { armButton, torsoButton, legButton };
-
-        // Asegurar que los paneles comiencen desactivados
-        extremityPanel.SetActive(false);
-        itemsPanel.SetActive(false);
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E) && nearPrisoner && !isInspecting)
-        {
-            OpenExtremityPanel();
-        }
-
-        if (extremityPanel.activeSelf)
-        {
-            HandleKeyboardNavigation();
-        }
-
-        // Si presionas Esc, se cierra todo
-        if (Input.GetKeyDown(KeyCode.Escape) && isInspecting)
-        {
-            ClosePanels();
-        }
-    }
-
-  
     private void GenerateRandomItems()
     {
         extremitiesItems["Brazos"] = GetRandomItems();
@@ -95,55 +63,5 @@ public class InspectionManager : MonoBehaviour
             itemsText.text += $"{color}{item}</color>\n";
         }
     }
-
-    void OpenExtremityPanel()
-    {
-        extremityPanel.SetActive(true);
-        LogicaPersonaje1.isInspecting = true; // 🔹 Bloqueamos movimiento
-    }
-
-    void ClosePanels()
-    {
-        extremityPanel.SetActive(false);
-        itemsPanel.SetActive(false);
-        LogicaPersonaje1.isInspecting = false; // 🔹 Reactivamos movimiento
-    }
-
-
-
-    void HandleKeyboardNavigation()
-    {
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            selectedButtonIndex = (selectedButtonIndex + 1) % extremityButtons.Length;
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            selectedButtonIndex = (selectedButtonIndex - 1 + extremityButtons.Length) % extremityButtons.Length;
-        }
-
-        // Resaltar el botón seleccionado
-        EventSystem.current.SetSelectedGameObject(extremityButtons[selectedButtonIndex].gameObject);
-
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            extremityButtons[selectedButtonIndex].onClick.Invoke();
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Prisionero"))
-        {
-            nearPrisoner = true; // Estamos cerca del prisionero
-        }
-    }
-
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Prisionero"))
-        {
-            nearPrisoner = false; // Salimos del área del prisionero
-        }
-    }
 }
+
