@@ -2376,6 +2376,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 803679074}
+  - component: {fileID: 803679075}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -2400,6 +2401,24 @@ Transform:
   - {fileID: 1415518762}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &803679075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 803679072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be794a5996631f4184574c09497aa9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extremityPanel: {fileID: 1307536014}
+  itemsPanel: {fileID: 363628254}
+  itemsText: {fileID: 934197596}
+  armButton: {fileID: 1324125328}
+  torsoButton: {fileID: 450894894}
+  legButton: {fileID: 1674401742}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2525,7 +2544,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -6315,7 +6334,6 @@ GameObject:
   - component: {fileID: 2089911187}
   - component: {fileID: 2089911191}
   - component: {fileID: 2089911192}
-  - component: {fileID: 2089911193}
   m_Layer: 0
   m_Name: Personaje prototipo
   m_TagString: Player
@@ -6405,7 +6423,7 @@ Transform:
   m_GameObject: {fileID: 2089911186}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 6.6, y: 1.73, z: 1.06}
+  m_LocalPosition: {x: -7.38, y: 1.73, z: -12.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6455,24 +6473,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2089911193
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2089911186}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1be794a5996631f4184574c09497aa9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  extremityPanel: {fileID: 1307536014}
-  itemsPanel: {fileID: 363628254}
-  itemsText: {fileID: 934197596}
-  armButton: {fileID: 1324125328}
-  torsoButton: {fileID: 450894894}
-  legButton: {fileID: 1674401742}
 --- !u!1 &2121134438
 GameObject:
   m_ObjectHideFlags: 0
