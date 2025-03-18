@@ -6,11 +6,11 @@ using UnityEngine.EventSystems; // Necesario para seleccionar botones
 
 public class InspectionManager : MonoBehaviour
 {
-    public GameObject extremityPanel;
-    public GameObject itemsPanel;
-    public Text itemsText;
+    public GameObject extremityPanel;   // Panel de selección de extremidades
+    public GameObject itemsPanel;       // Panel donde se muestra la lista de objetos
+    public Text itemsText;              // Texto que muestra los objetos
 
-    public Button armButton, torsoButton, legButton;
+    public Button armButton, torsoButton, legButton;  // Botones de extremidades
 
     private Dictionary<string, List<string>> extremitiesItems = new Dictionary<string, List<string>>();
     private List<Button> buttons = new List<Button>();
@@ -27,8 +27,6 @@ public class InspectionManager : MonoBehaviour
 
     void Start()
     {
-        GenerateRandomItems();
-
         // Guardamos los botones en una lista
         buttons.Add(armButton);
         buttons.Add(torsoButton);
@@ -39,8 +37,8 @@ public class InspectionManager : MonoBehaviour
         torsoButton.onClick.AddListener(() => ShowItems("Torso"));
         legButton.onClick.AddListener(() => ShowItems("Piernas"));
 
-        extremityPanel.SetActive(false);
-        itemsPanel.SetActive(false);
+        extremityPanel.SetActive(false); // Inicialmente está oculto
+        itemsPanel.SetActive(false); // Inicialmente está oculto
     }
 
     void Update()
@@ -66,15 +64,20 @@ public class InspectionManager : MonoBehaviour
 
     void OpenExtremityPanel()
     {
-        extremityPanel.SetActive(true);
-        LogicaPersonaje1.isInspecting = true; // Bloqueamos movimiento
+        GenerateRandomItems();  //  Genera nuevos objetos aleatorios en cada inspección
+        extremityPanel.SetActive(true);  // Activamos el panel de extremidades
+        LogicaPersonaje1.isInspecting = true; // Bloqueamos el movimiento del personaje
+
+        //  Seleccionamos el primer botón para que las flechas funcionen
+        selectedButtonIndex = 0;
+        SelectButton(buttons[selectedButtonIndex]);
     }
 
     void ClosePanels()
     {
-        extremityPanel.SetActive(false);
-        itemsPanel.SetActive(false);
-        LogicaPersonaje1.isInspecting = false; // Reactivamos movimiento
+        extremityPanel.SetActive(false);  // Ocultamos el panel de extremidades
+        itemsPanel.SetActive(false);     // Ocultamos el panel de objetos
+        LogicaPersonaje1.isInspecting = false;  // Reactivamos el movimiento del personaje
     }
 
     void HandleKeyboardNavigation()
@@ -91,7 +94,7 @@ public class InspectionManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Return)) // Enter para aceptar
         {
-            buttons[selectedButtonIndex].onClick.Invoke();
+            buttons[selectedButtonIndex].onClick.Invoke(); // Invoca el evento del botón seleccionado
         }
     }
 
@@ -110,7 +113,7 @@ public class InspectionManager : MonoBehaviour
     private List<string> GetRandomItems()
     {
         List<string> items = new List<string>();
-        int itemCount = Random.Range(2, 4);
+        int itemCount = Random.Range(2, 4);  // Generamos entre 2 y 3 objetos por extremidad
 
         for (int i = 0; i < itemCount; i++)
         {
@@ -122,10 +125,11 @@ public class InspectionManager : MonoBehaviour
 
     public void ShowItems(string extremity)
     {
-        itemsPanel.SetActive(true);
-        extremityPanel.SetActive(false);
+        itemsPanel.SetActive(true);    // Mostramos el panel de objetos
+        extremityPanel.SetActive(false);  // Ocultamos el panel de extremidades
         itemsText.text = $"Objetos en {extremity}:\n";
 
+        // Mostramos los objetos aleatorios en el texto
         foreach (var item in extremitiesItems[extremity])
         {
             string color = dangerousItems.Contains(item) ? "<color=red>" : "<color=green>";
