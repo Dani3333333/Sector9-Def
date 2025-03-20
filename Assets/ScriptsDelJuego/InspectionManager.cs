@@ -43,22 +43,27 @@ public class InspectionManager : MonoBehaviour
 
     void Update()
     {
-        // Activar inspección si estamos cerca del prisionero y presionamos E
         if (Input.GetKeyDown(KeyCode.E) && nearPrisoner && !isInspecting)
         {
             OpenExtremityPanel();
         }
 
-        // Control de navegación por teclado cuando el panel está activo
+        // Control de navegación por teclado cuando el panel de selección de extremidades está activo
         if (extremityPanel.activeSelf)
         {
             HandleKeyboardNavigation();
         }
 
-        // Cerrar los paneles con ESC
-        if (Input.GetKeyDown(KeyCode.Escape) && isInspecting)
+        // Volver atrás o salir con ESC
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            ClosePanels();
+            HandleEscape();
+        }
+
+        // Volver atrás con Backspace cuando estamos en el panel de objetos
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            HandleBackspace();
         }
     }
 
@@ -77,7 +82,33 @@ public class InspectionManager : MonoBehaviour
     {
         extremityPanel.SetActive(false);  // Ocultamos el panel de extremidades
         itemsPanel.SetActive(false);     // Ocultamos el panel de objetos
+        isInspecting = false;             // Indicamos que ya no estamos inspeccionando
         LogicaPersonaje1.isInspecting = false;  // Reactivamos el movimiento del personaje
+    }
+
+    void HandleEscape()
+    {
+        if (itemsPanel.activeSelf)
+        {
+            // Si estamos en la lista de objetos, volvemos al panel de extremidades
+            itemsPanel.SetActive(false);
+            extremityPanel.SetActive(true);
+        }
+        else if (extremityPanel.activeSelf)
+        {
+            // Si estamos en el panel de extremidades, cerramos todo el menú de inspección
+            ClosePanels();
+        }
+    }
+
+    void HandleBackspace()
+    {
+        if (itemsPanel.activeSelf)
+        {
+            // Si estamos en el panel de objetos, volvemos al panel de extremidades
+            itemsPanel.SetActive(false);
+            extremityPanel.SetActive(true);
+        }
     }
 
     void HandleKeyboardNavigation()
@@ -92,7 +123,7 @@ public class InspectionManager : MonoBehaviour
             selectedButtonIndex = (selectedButtonIndex - 1 + buttons.Count) % buttons.Count;
             SelectButton(buttons[selectedButtonIndex]);
         }
-        else if (Input.GetKeyDown(KeyCode.Return)) // Enter para aceptar
+        else if (Input.GetKeyDown(KeyCode.Return)) // Return para aceptar
         {
             buttons[selectedButtonIndex].onClick.Invoke(); // Invoca el evento del botón seleccionado
         }
@@ -108,6 +139,8 @@ public class InspectionManager : MonoBehaviour
         extremitiesItems["Brazos"] = GetRandomItems();
         extremitiesItems["Torso"] = GetRandomItems();
         extremitiesItems["Piernas"] = GetRandomItems();
+
+      
     }
 
     private List<string> GetRandomItems()
@@ -132,8 +165,7 @@ public class InspectionManager : MonoBehaviour
         // Mostramos los objetos aleatorios en el texto
         foreach (var item in extremitiesItems[extremity])
         {
-            string color = dangerousItems.Contains(item) ? "<color=red>" : "<color=green>";
-            itemsText.text += $"{color}{item}</color>\n";
+            itemsText.text += $"{item}\n";
         }
     }
 

@@ -1045,7 +1045,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &363628255
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1055,7 +1055,7 @@ RectTransform:
   m_GameObject: {fileID: 363628254}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 256}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.74, y: 0.74, z: 0.74}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 934197594}
@@ -2376,7 +2376,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 803679074}
-  - component: {fileID: 803679075}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -2401,24 +2400,6 @@ Transform:
   - {fileID: 1415518762}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &803679075
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 803679072}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1be794a5996631f4184574c09497aa9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  extremityPanel: {fileID: 1307536014}
-  itemsPanel: {fileID: 363628254}
-  itemsText: {fileID: 934197596}
-  armButton: {fileID: 1324125328}
-  torsoButton: {fileID: 450894894}
-  legButton: {fileID: 1674401742}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2548,10 +2529,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.8
-  m_Height: 2
+  m_Radius: 2.0193374
+  m_Height: 4.038675
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0.14575219, y: 0, z: 0.29672003}
 --- !u!23 &856038245
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2787,15 +2768,15 @@ RectTransform:
   m_GameObject: {fileID: 934197593}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 9}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.61, y: 1.61, z: 1.61}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 363628255}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 96.3183, y: -53.812714}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 1, y: 0}
+  m_SizeDelta: {x: 346.1, y: 127.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &934197595
 CanvasRenderer:
@@ -2826,7 +2807,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 997a43b767814dd0a7642ec9b78cba41, type: 3}
     m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
@@ -6334,6 +6315,7 @@ GameObject:
   - component: {fileID: 2089911187}
   - component: {fileID: 2089911191}
   - component: {fileID: 2089911192}
+  - component: {fileID: 2089911193}
   m_Layer: 0
   m_Name: Personaje prototipo
   m_TagString: Player
@@ -6473,6 +6455,24 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &2089911193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2089911186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be794a5996631f4184574c09497aa9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  extremityPanel: {fileID: 1307536014}
+  itemsPanel: {fileID: 363628254}
+  itemsText: {fileID: 934197596}
+  armButton: {fileID: 1324125328}
+  torsoButton: {fileID: 450894894}
+  legButton: {fileID: 1674401742}
 --- !u!1 &2121134438
 GameObject:
   m_ObjectHideFlags: 0
