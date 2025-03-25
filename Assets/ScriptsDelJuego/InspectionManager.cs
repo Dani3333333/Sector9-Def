@@ -55,7 +55,7 @@ public class InspectionManager : MonoBehaviour
         }
 
         // Volver atrás o salir con ESC
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Backspace))
         {
             HandleEscape();
         }
