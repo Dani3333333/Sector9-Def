@@ -19,6 +19,10 @@ public class InspectionManager : MonoBehaviour
     private int selectedButtonIndex = 0;
     private bool isInspecting = false;
     private bool nearPrisoner = false;
+    private string currentExtremity = "";
+
+    public SliderController sliderController;
+
 
     private List<string> possibleItems = new List<string>
     {
@@ -44,6 +48,8 @@ public class InspectionManager : MonoBehaviour
 
         extremityPanel.SetActive(false);
         itemsPanel.SetActive(false);
+
+        GenerateRandomItems(); 
     }
 
     void Update()
@@ -62,8 +68,8 @@ public class InspectionManager : MonoBehaviour
             HandleKeyboardNavigation(itemButtons);
         }
 
-        // Eliminar botones con la tecla H, solo si estamos en el panel de ítems
-        if (Input.GetKeyDown(KeyCode.H) && itemsPanel.activeSelf && itemButtons.Count > 0)
+        // Eliminar ítems con H
+        if (Input.GetKeyDown(KeyCode.H))
         {
             RemoveSelectedItem();
         }
@@ -76,7 +82,7 @@ public class InspectionManager : MonoBehaviour
 
     void OpenExtremityPanel()
     {
-        GenerateRandomItems();
+  
         extremityPanel.SetActive(true);
         LogicaPersonaje1.isInspecting = true;
         selectedButtonIndex = 0;
@@ -155,6 +161,7 @@ public class InspectionManager : MonoBehaviour
 
     public void ShowItems(string extremity)
     {
+        currentExtremity = extremity;
         itemsPanel.SetActive(true);
         extremityPanel.SetActive(false);
         GenerateButtons(extremity);
@@ -162,24 +169,15 @@ public class InspectionManager : MonoBehaviour
 
     void GenerateButtons(string extremity)
     {
-        // Limpiar los botones existentes
-        foreach (Transform child in itemButtonContainer)
+        // Limpiar botones anteriores
+        foreach (Button btn in itemButtons)
         {
-            Destroy(child.gameObject);
+            Destroy(btn.gameObject);
         }
-
         itemButtons.Clear();
 
-        // Asegurarse de que siempre haya 3 elementos
         List<string> items = extremitiesItems[extremity];
 
-        // Si hay menos de 3 elementos, agregar más elementos aleatorios hasta tener 3
-        while (items.Count < 3)
-        {
-            items.AddRange(GetRandomItems()); // Obtener más objetos aleatorios si hace falta
-        }
-
-        // Crear botones para los ítems actuales
         foreach (string item in items)
         {
             GameObject buttonObj = Instantiate(itemButtonPrefab, itemButtonContainer);
@@ -187,11 +185,9 @@ public class InspectionManager : MonoBehaviour
             Text buttonText = buttonObj.GetComponentInChildren<Text>();
 
             buttonText.text = item;
-            button.onClick.AddListener(() => RemoveSelectedItem());
             itemButtons.Add(button);
         }
 
-        // Seleccionar el primer botón
         if (itemButtons.Count > 0)
         {
             selectedButtonIndex = 0;
@@ -199,58 +195,42 @@ public class InspectionManager : MonoBehaviour
         }
     }
 
-    private void RemoveSelectedItem()
+    void RemoveSelectedItem()
     {
-        if (itemButtons.Count > 0)
+        if (!itemsPanel.activeSelf || itemButtons.Count == 0) return;
+
+        Button selectedButton = itemButtons[selectedButtonIndex];
+        string itemName = selectedButton.GetComponentInChildren<Text>().text;
+
+        if (!dangerousItems.Contains(itemName))
         {
-            // Verificar si el botón seleccionado tiene un ítem
-            Button buttonToRemove = itemButtons[selectedButtonIndex];
-            string itemName = buttonToRemove.GetComponentInChildren<Text>().text;
-            Debug.Log($"Eliminando item: {itemName}");
-
-            // Obtener la extremidad actual activa (Brazos, Torso, Piernas)
-            string activeExtremity = null;
-            if (extremityPanel.activeSelf)
+            if (sliderController != null)
             {
-                if (buttons[0].gameObject == EventSystem.current.currentSelectedGameObject) activeExtremity = "Brazos";
-                else if (buttons[1].gameObject == EventSystem.current.currentSelectedGameObject) activeExtremity = "Torso";
-                else if (buttons[2].gameObject == EventSystem.current.currentSelectedGameObject) activeExtremity = "Piernas";
+                sliderController.DecreaseHappiness(10f);
             }
+        }
 
-            if (activeExtremity != null)
-            {
-                // Eliminar el ítem de la lista correspondiente a la extremidad
-                List<string> items = extremitiesItems[activeExtremity];
-                if (items.Contains(itemName))
-                {
-                    items.Remove(itemName);  // Eliminar el ítem de la lista
-                    Debug.Log($"Ítem eliminado de la lista de {activeExtremity}: {itemName}");
-                }
+        // Eliminar de lista de botones y destruir objeto
+        itemButtons.RemoveAt(selectedButtonIndex);
+        Destroy(selectedButton.gameObject);
 
-                // Eliminar el botón visualmente
-                itemButtons.RemoveAt(selectedButtonIndex);
-                Destroy(buttonToRemove.gameObject);
+        // Eliminar del diccionario (lista de ítems)
+        if (extremitiesItems.ContainsKey(currentExtremity))
+        {
+            extremitiesItems[currentExtremity].Remove(itemName);
+        }
 
-                // Regenerar ítems si hace falta
-                if (items.Count < 3) // Si hay menos de 3 elementos, añadir nuevos ítems aleatorios
-                {
-                    items.AddRange(GetRandomItems());
-                }
-
-                // Ajustar índice y seleccionar el nuevo botón
-                if (itemButtons.Count > 0)
-                {
-                    selectedButtonIndex = Mathf.Clamp(selectedButtonIndex, 0, itemButtons.Count - 1);
-                    SelectButton(itemButtons[selectedButtonIndex]);
-                }
-            }
+        // Ajustar índice
+        if (itemButtons.Count == 0)
+        {
+            selectedButtonIndex = 0;
         }
         else
         {
-            Debug.Log("No hay botones para eliminar.");
+            selectedButtonIndex = Mathf.Clamp(selectedButtonIndex, 0, itemButtons.Count - 1);
+            SelectButton(itemButtons[selectedButtonIndex]);
         }
     }
-
 
     private void OnTriggerEnter(Collider other)
     {
