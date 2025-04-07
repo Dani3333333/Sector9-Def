@@ -42,8 +42,7 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        // Animación de apertura del menú (puerta de nave espacial)
-        StartCoroutine(OpenMenuAnimation());
+       
 
         // Hacer que los botones respondan
         resumeButton.onClick.AddListener(ClosePauseMenu);
@@ -53,52 +52,14 @@ public class PauseMenu : MonoBehaviour
     void ClosePauseMenu()
     {
         isPaused = false;
-
-        // Animación de cierre del menú (puerta de nave espacial)
-        StartCoroutine(CloseMenuAnimation());
+        pauseMenuPanel.SetActive(false);
 
         // Bloquear el ratón de nuevo al reanudar
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    IEnumerator OpenMenuAnimation()
-    {
-        RectTransform panelRect = pauseMenuPanel.GetComponent<RectTransform>();
-
-        // Empezamos desde el centro del panel hacia afuera (efecto "puerta de nave espacial")
-        panelRect.localScale = Vector3.zero; // Empieza desde el centro
-        Vector3 targetScale = Vector3.one;
-
-        // Animación
-        float elapsedTime = 0f;
-        while (elapsedTime < animationSpeed)
-        {
-            panelRect.localScale = Vector3.Lerp(Vector3.zero, targetScale, (elapsedTime / animationSpeed));
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        panelRect.localScale = targetScale;
-    }
-
-    IEnumerator CloseMenuAnimation()
-    {
-        RectTransform panelRect = pauseMenuPanel.GetComponent<RectTransform>();
-
-        // Animación de cierre (de afuera al centro)
-        Vector3 targetScale = Vector3.zero;
-
-        // Animación
-        float elapsedTime = 0f;
-        while (elapsedTime < animationSpeed)
-        {
-            panelRect.localScale = Vector3.Lerp(Vector3.one, targetScale, (elapsedTime / animationSpeed));
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        panelRect.localScale = targetScale;
-        pauseMenuPanel.SetActive(false); // Desactivamos el panel cuando la animación termine
-    }
+   
 
     void QuitToMainMenu()
     {

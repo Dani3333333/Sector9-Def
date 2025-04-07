@@ -23,6 +23,8 @@ public class SliderController : MonoBehaviour
     void Update()
     {
         transform.LookAt(Camera.main.transform);
+        valueText.transform.rotation = Quaternion.LookRotation(valueText.transform.position - Camera.main.transform.position);
+
 
         // Lerp de la barra
         if (Mathf.Abs(slider.value - targetHappiness) > 0.01f)
@@ -47,6 +49,7 @@ public class SliderController : MonoBehaviour
 
     void UpdateVisuals()
     {
+
         valueText.text = $"Felicidad: {Mathf.RoundToInt(slider.value)}%";
 
         // Cambiar el color de la barra de felicidad
