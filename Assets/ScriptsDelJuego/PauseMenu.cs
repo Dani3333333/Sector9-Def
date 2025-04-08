@@ -12,15 +12,23 @@ public class PauseMenu : MonoBehaviour
     public Button loadCheckpointButton; // Botón de cargar punto de control
     public Button optionsButton;      // Botón de opciones
     public Button quitButton;         // Botón de salir al menú principal
+    public Button playButton;         // Botón de jugar (debe ser asignado desde el menú principal)
 
     private bool isPaused = false;    // Estado del juego
+    private bool gameStarted = false; // Estado de si el juego ha comenzado
 
     public float animationSpeed = 1f; // Velocidad de animación de la puerta
 
+    void Start()
+    {
+        // Asegurarse de que el botón "Jugar" tenga la función correcta
+        playButton.onClick.AddListener(StartGame);
+    }
+
     void Update()
     {
-        // Si presionamos ESC, alternamos el menú de pausa
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // Si el juego ya ha comenzado, permitir abrir el menú con ESC
+        if (gameStarted && Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
             {
@@ -33,6 +41,13 @@ public class PauseMenu : MonoBehaviour
         }
     }
 
+    void StartGame()
+    {
+        // Marcar que el juego ha comenzado y deshabilitar el menú de pausa temporalmente
+        gameStarted = true;
+        Debug.Log("Juego iniciado!");
+    }
+
     void OpenPauseMenu()
     {
         isPaused = true;
@@ -41,8 +56,6 @@ public class PauseMenu : MonoBehaviour
         // Bloquear el ratón
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-       
 
         // Hacer que los botones respondan
         resumeButton.onClick.AddListener(ClosePauseMenu);
@@ -58,8 +71,6 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
-   
 
     void QuitToMainMenu()
     {
