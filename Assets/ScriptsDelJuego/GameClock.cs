@@ -42,4 +42,11 @@ public class GameClock : MonoBehaviour
 
         clockText.text = $"{hour:D2}:{minute:D2}";
     }
+
+    public void ResetClock()
+    {
+        hour = 6;
+        minute = 0;
+        timer = 0f;
+    }
 }
