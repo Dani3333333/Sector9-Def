@@ -22,6 +22,9 @@ public class SleepManager : MonoBehaviour
     private bool canSleep = false;
     private bool isSleeping = false;
 
+    public GameObject sleepText;
+
+
     void Update()
     {
         if (canSleep && Input.GetKeyDown(KeyCode.E) && !isSleeping)

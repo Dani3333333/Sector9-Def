@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,16 +14,17 @@ public class PrisonerHappinessPanel : MonoBehaviour
     private Vector2 visiblePos;
     private bool isVisible = false;
 
+    private List<PrisonerEntryUI> prisonerEntries = new List<PrisonerEntryUI>();
+
     void Start()
     {
         float panelHeight = panel.rect.height;
 
-        // Anclar el panel en la esquina inferior izquierda
         panel.anchorMin = new Vector2(0, 0);
         panel.anchorMax = new Vector2(0, 0);
-        panel.pivot = new Vector2(0, 0); // esquina inferior izquierda
+        panel.pivot = new Vector2(0, 0);
 
-        visiblePos = new Vector2(20f, 20f); // antes estaba en 0, ahora a 20 píxeles del borde izquierdo
+        visiblePos = new Vector2(20f, 20f);
         hiddenPos = new Vector2(20f, -panelHeight);
 
         panel.anchoredPosition = hiddenPos;
@@ -46,6 +46,12 @@ public class PrisonerHappinessPanel : MonoBehaviour
         if (isVisible)
         {
             panel.anchoredPosition = Vector2.MoveTowards(panel.anchoredPosition, visiblePos, moveSpeed * Time.deltaTime);
+
+            // Actualizar valores del panel
+            foreach (var entry in prisonerEntries)
+            {
+                entry.UpdateUI();
+            }
         }
         else
         {
@@ -64,30 +70,27 @@ public class PrisonerHappinessPanel : MonoBehaviour
             Destroy(child.gameObject);
         }
 
+        prisonerEntries.Clear();
+
         GameObject[] prisoners = GameObject.FindGameObjectsWithTag("Prisionero");
 
         int count = 1;
-        foreach (GameObject prisoner in prisoners)
+        foreach (GameObject prisonerGO in prisoners)
         {
-            GameObject entry = Instantiate(prisonerEntryPrefab, container);
-
-            // Buscar componentes hijos
-            TextMeshProUGUI nameText = entry.GetComponentInChildren<TextMeshProUGUI>();
-            Slider slider = entry.GetComponentInChildren<Slider>();
-
-            if (nameText != null)
+            Prisionero prisoner = prisonerGO.GetComponent<Prisionero>();
+            if (prisoner != null)
             {
-                nameText.text = $"Prisionero {count}";
-            }
+                GameObject entryGO = Instantiate(prisonerEntryPrefab, container);
+                PrisonerEntryUI entryUI = entryGO.GetComponent<PrisonerEntryUI>();
 
-            if (slider != null)
-            {
-                // Puedes obtener un valor de felicidad desde un script en el prisionero si quieres
-                float happiness = Random.Range(0.2f, 1f); // temporal
-                slider.value = happiness;
-            }
+                if (entryUI != null)
+                {
+                    entryUI.Setup(prisoner, count);
+                    prisonerEntries.Add(entryUI);
+                }
 
-            count++;
+                count++;
+            }
         }
     }
 }
