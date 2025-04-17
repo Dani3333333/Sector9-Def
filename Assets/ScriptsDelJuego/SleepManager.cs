@@ -12,18 +12,21 @@ public class SleepManager : MonoBehaviour
     public GameObject sleepPromptText;
 
     [Header("Video")]
-    public GameObject sleepVideoImage; // RawImage
+    public GameObject sleepVideoImage;
     public VideoPlayer videoPlayer;
 
     [Header("Fade")]
     public Image fadePanel;
     public float fadeDuration = 1f;
 
+    [Header("Texto de Día")]
+    public TextMeshProUGUI dayText;
+    public float dayTextDuration = 2.5f;
+
     private bool canSleep = false;
     private bool isSleeping = false;
 
     public GameObject sleepText;
-
 
     void Update()
     {
@@ -36,38 +39,29 @@ public class SleepManager : MonoBehaviour
     IEnumerator SleepWithFadeAndVideoRoutine()
     {
         isSleeping = true;
-
-        // Ocultar UI
         hud.SetActive(false);
         sleepPromptText.SetActive(false);
 
-        // FUNDIDO A NEGRO
         yield return StartCoroutine(FadeToBlack());
 
-        // Mostrar RawImage con el video
         sleepVideoImage.SetActive(true);
         videoPlayer.gameObject.SetActive(true);
 
-        // PREPARAR VIDEO (muy importante)
         videoPlayer.Prepare();
         while (!videoPlayer.isPrepared)
-        {
             yield return null;
-        }
 
-        // Reproducir el video
         videoPlayer.Play();
 
-        // Esperar a que el video termine
-        while (videoPlayer.isPlaying)
-        {
-            yield return null;
-        }
+        if (sleepText != null) sleepText.SetActive(true);
 
-        // FUNDIDO A NEGRO (por si termina en blanco o hay salto)
+        while (videoPlayer.isPlaying)
+            yield return null;
+
+        if (sleepText != null) sleepText.SetActive(false);
+
         yield return StartCoroutine(FadeToBlack());
 
-        // Ocultar video
         videoPlayer.Stop();
         sleepVideoImage.SetActive(false);
         videoPlayer.gameObject.SetActive(false);
@@ -75,13 +69,38 @@ public class SleepManager : MonoBehaviour
         // Reiniciar el reloj
         gameClock.ResetClock();
 
-        // Mostrar UI
+        //  ACTUALIZAR DÍA DESDE EL GAME MANAGER
+        if (GameManager.Instance.isTutorial)
+        {
+            GameManager.Instance.EndTutorial(); // Salimos del tutorial  Día 1
+        }
+        else
+        {
+            GameManager.Instance.NextDay(); // Avanzamos un día
+        }
+
+        //  Mostrar texto de día (si se quiere mantener además del UI DayMessageUI)
+        yield return StartCoroutine(ShowDayText("Día " + GameManager.Instance.currentDay));
+
+        //  Mostrar texto del sistema externo DayMessageUI
+        FindObjectOfType<DayMessageUI>().ShowDayMessage(GameManager.Instance.currentDay);
+
+        //  Instanciar prisioneros para ese día
+        FindObjectOfType<PrisonerManager>().SpawnPrisonersForDay(GameManager.Instance.currentDay);
+
         hud.SetActive(true);
 
-        // FUNDIDO DESDE NEGRO
         yield return StartCoroutine(FadeFromBlack());
 
         isSleeping = false;
+    }
+
+    IEnumerator ShowDayText(string text)
+    {
+        dayText.text = text;
+        dayText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(dayTextDuration);
+        dayText.gameObject.SetActive(false);
     }
 
     IEnumerator FadeToBlack()
