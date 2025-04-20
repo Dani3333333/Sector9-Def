@@ -24,6 +24,8 @@ public class InspectionManager : MonoBehaviour
     public SliderController sliderController;
 
 
+
+
     private List<string> possibleItems = new List<string>
     {
         "Cuchillo", "Mechero", "Revista", "Llave", "Celular", "Papel", "Navaja", "Bolígrafo", "Encendedor",
@@ -231,6 +233,38 @@ public class InspectionManager : MonoBehaviour
             SelectButton(itemButtons[selectedButtonIndex]);
         }
     }
+
+    public void ReplenishItems()
+    {
+        foreach (var key in new List<string> { "Brazos", "Torso", "Piernas" })
+        {
+            if (!extremitiesItems.ContainsKey(key))
+            {
+                extremitiesItems[key] = new List<string>();
+            }
+
+            List<string> currentItems = extremitiesItems[key];
+            List<string> availableItems = new List<string>(possibleItems);
+
+            // Eliminar los que ya están para no repetir
+            foreach (string existingItem in currentItems)
+            {
+                availableItems.Remove(existingItem);
+            }
+
+            // Rellenar hasta 3
+            while (currentItems.Count < 3 && availableItems.Count > 0)
+            {
+                int randomIndex = Random.Range(0, availableItems.Count);
+                currentItems.Add(availableItems[randomIndex]);
+                availableItems.RemoveAt(randomIndex);
+            }
+
+            // Actualizar el diccionario
+            extremitiesItems[key] = currentItems;
+        }
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {

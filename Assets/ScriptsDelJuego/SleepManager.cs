@@ -32,14 +32,22 @@ public class SleepManager : MonoBehaviour
     {
         if (canSleep && Input.GetKeyDown(KeyCode.E) && !isSleeping)
         {
-            StartCoroutine(SleepWithFadeAndVideoRoutine());
+            // Verificar si puede dormir (hasta el Día 3)
+            if (GameManager.Instance.CanSleep())
+            {
+                StartCoroutine(SleepWithFadeAndVideoRoutine());
+            }
+            else
+            {
+                Debug.Log("Ya se han completado los 3 días.");
+            }
         }
     }
 
     IEnumerator SleepWithFadeAndVideoRoutine()
     {
         isSleeping = true;
-        hud.SetActive(false);
+        hud.SetActive(false);  // Desactivar el HUD
         sleepPromptText.SetActive(false);
 
         yield return StartCoroutine(FadeToBlack());
@@ -52,7 +60,6 @@ public class SleepManager : MonoBehaviour
             yield return null;
 
         videoPlayer.Play();
-
         if (sleepText != null) sleepText.SetActive(true);
 
         while (videoPlayer.isPlaying)
@@ -66,41 +73,70 @@ public class SleepManager : MonoBehaviour
         sleepVideoImage.SetActive(false);
         videoPlayer.gameObject.SetActive(false);
 
-        // Reiniciar el reloj
-        gameClock.ResetClock();
+        gameClock.ResetClock();  // Reiniciar el reloj
 
-        //  ACTUALIZAR DÍA DESDE EL GAME MANAGER
-        if (GameManager.Instance.isTutorial)
-        {
-            GameManager.Instance.EndTutorial(); // Salimos del tutorial  Día 1
-        }
-        else
-        {
-            GameManager.Instance.NextDay(); // Avanzamos un día
-        }
+        // Avanzar al siguiente día
+        GameManager.Instance.NextDay();
 
-        //  Mostrar texto de día (si se quiere mantener además del UI DayMessageUI)
-        yield return StartCoroutine(ShowDayText("Día " + GameManager.Instance.currentDay));
+        FindObjectOfType<InspectionManager>().ReplenishItems();
 
-        //  Mostrar texto del sistema externo DayMessageUI
+
+        // Mostrar texto del día y hacer fade del fondo negro
+        yield return StartCoroutine(ShowDayTextAndFadeFromBlack("Día " + GameManager.Instance.currentDay));
+
         FindObjectOfType<DayMessageUI>().ShowDayMessage(GameManager.Instance.currentDay);
-
-        //  Instanciar prisioneros para ese día
         FindObjectOfType<PrisonerManager>().SpawnPrisonersForDay(GameManager.Instance.currentDay);
 
-        hud.SetActive(true);
-
-        yield return StartCoroutine(FadeFromBlack());
-
         isSleeping = false;
+        canSleep = true;
+
     }
 
-    IEnumerator ShowDayText(string text)
+    IEnumerator ShowDayTextAndFadeFromBlack(string text)
     {
         dayText.text = text;
+        dayText.alpha = 0f;
+        dayText.transform.localScale = Vector3.zero;
         dayText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(dayTextDuration);
+
+        // Fade in con escalado
+        float t = 0f;
+        while (t < 0.3f)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, t / 0.3f);
+            float scale = Mathf.SmoothStep(0f, 1.1f, t / 0.3f);
+            dayText.alpha = alpha;
+            dayText.transform.localScale = Vector3.one * scale;
+            yield return null;
+        }
+
+        dayText.transform.localScale = Vector3.one * 1.1f;
+        yield return new WaitForSeconds(0.05f);
+        dayText.transform.localScale = Vector3.one;
+
+        // Esperar el resto de tiempo antes de desvanecer
+        yield return new WaitForSeconds(dayTextDuration - fadeDuration);
+
+        // Fade out del panel y el texto al mismo tiempo
+        t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
+            fadePanel.color = new Color(0f, 0f, 0f, alpha);
+            dayText.alpha = alpha;
+            yield return null;
+        }
+
+        fadePanel.color = new Color(0f, 0f, 0f, 0f);
         dayText.gameObject.SetActive(false);
+
+        isSleeping = false;
+        // Activar el HUD después de mostrar el día
+        hud.SetActive(true);
+        canSleep = true;
+
     }
 
     IEnumerator FadeToBlack()
@@ -113,18 +149,7 @@ public class SleepManager : MonoBehaviour
             fadePanel.color = new Color(0f, 0f, 0f, alpha);
             yield return null;
         }
-    }
-
-    IEnumerator FadeFromBlack()
-    {
-        float t = 0f;
-        while (t < fadeDuration)
-        {
-            t += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
-            fadePanel.color = new Color(0f, 0f, 0f, alpha);
-            yield return null;
-        }
+        fadePanel.color = new Color(0f, 0f, 0f, 1f);
     }
 
     private void OnTriggerEnter(Collider other)
