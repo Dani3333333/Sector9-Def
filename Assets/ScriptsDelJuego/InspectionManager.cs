@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using TMPro;
 
 public class InspectionManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class InspectionManager : MonoBehaviour
     public GameObject itemButtonPrefab;
     public Transform itemButtonContainer;
 
+    public TextMeshProUGUI interactionPrompt; // <- NUEVO
+
     private Dictionary<string, List<string>> extremitiesItems = new Dictionary<string, List<string>>();
     private List<Button> buttons = new List<Button>();
     private List<Button> itemButtons = new List<Button>();
@@ -22,9 +25,6 @@ public class InspectionManager : MonoBehaviour
     private string currentExtremity = "";
 
     public SliderController sliderController;
-
-
-
 
     private List<string> possibleItems = new List<string>
     {
@@ -50,8 +50,9 @@ public class InspectionManager : MonoBehaviour
 
         extremityPanel.SetActive(false);
         itemsPanel.SetActive(false);
+        if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false); // Oculta al inicio
 
-        GenerateRandomItems(); 
+        GenerateRandomItems();
     }
 
     void Update()
@@ -59,6 +60,7 @@ public class InspectionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && nearPrisoner && !isInspecting)
         {
             OpenExtremityPanel();
+            if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false); // Oculta el mensaje
         }
 
         if (extremityPanel.activeSelf)
@@ -70,7 +72,6 @@ public class InspectionManager : MonoBehaviour
             HandleKeyboardNavigation(itemButtons);
         }
 
-        // Eliminar ítems con H
         if (Input.GetKeyDown(KeyCode.H))
         {
             RemoveSelectedItem();
@@ -84,9 +85,9 @@ public class InspectionManager : MonoBehaviour
 
     void OpenExtremityPanel()
     {
-  
         extremityPanel.SetActive(true);
         LogicaPersonaje1.isInspecting = true;
+        isInspecting = true;
         selectedButtonIndex = 0;
         SelectButton(buttons[selectedButtonIndex]);
     }
@@ -97,6 +98,12 @@ public class InspectionManager : MonoBehaviour
         itemsPanel.SetActive(false);
         isInspecting = false;
         LogicaPersonaje1.isInspecting = false;
+
+        if (nearPrisoner && interactionPrompt != null)
+        {
+            interactionPrompt.text = "[E] Cachear";
+            interactionPrompt.gameObject.SetActive(true);
+        }
     }
 
     void HandleEscape()
@@ -171,7 +178,6 @@ public class InspectionManager : MonoBehaviour
 
     void GenerateButtons(string extremity)
     {
-        // Limpiar botones anteriores
         foreach (Button btn in itemButtons)
         {
             Destroy(btn.gameObject);
@@ -212,17 +218,14 @@ public class InspectionManager : MonoBehaviour
             }
         }
 
-        // Eliminar de lista de botones y destruir objeto
         itemButtons.RemoveAt(selectedButtonIndex);
         Destroy(selectedButton.gameObject);
 
-        // Eliminar del diccionario (lista de ítems)
         if (extremitiesItems.ContainsKey(currentExtremity))
         {
             extremitiesItems[currentExtremity].Remove(itemName);
         }
 
-        // Ajustar índice
         if (itemButtons.Count == 0)
         {
             selectedButtonIndex = 0;
@@ -246,13 +249,11 @@ public class InspectionManager : MonoBehaviour
             List<string> currentItems = extremitiesItems[key];
             List<string> availableItems = new List<string>(possibleItems);
 
-            // Eliminar los que ya están para no repetir
             foreach (string existingItem in currentItems)
             {
                 availableItems.Remove(existingItem);
             }
 
-            // Rellenar hasta 3
             while (currentItems.Count < 3 && availableItems.Count > 0)
             {
                 int randomIndex = Random.Range(0, availableItems.Count);
@@ -260,17 +261,20 @@ public class InspectionManager : MonoBehaviour
                 availableItems.RemoveAt(randomIndex);
             }
 
-            // Actualizar el diccionario
             extremitiesItems[key] = currentItems;
         }
     }
-
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Prisionero"))
         {
             nearPrisoner = true;
+            if (!isInspecting && interactionPrompt != null)
+            {
+                interactionPrompt.text = "[E] Cachear";
+                interactionPrompt.gameObject.SetActive(true);
+            }
         }
     }
 
@@ -279,6 +283,10 @@ public class InspectionManager : MonoBehaviour
         if (other.CompareTag("Prisionero"))
         {
             nearPrisoner = false;
+            if (interactionPrompt != null)
+            {
+                interactionPrompt.gameObject.SetActive(false);
+            }
         }
     }
 }
