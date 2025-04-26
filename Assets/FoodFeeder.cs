@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,78 +8,53 @@ using UnityEngine.UI;
 
 
 public class FoodFeeder : MonoBehaviour
+
 {
-    public GameObject foodPanel; // Panel del Canvas para escoger comida
-    public Button foodButton;    // Botón para confirmar comida
-    public GameObject[] foodObjects; // Los 4 tipos de comida (en la escena)
+    public GameObject foodPanelUI; // El panel que aparece cuando el jugador entra
+    public GameObject[] foodObjects; // Los 4 objetos de comida
+    public GameClock gameClock; // Referencia al reloj del juego
+    private bool playerInRange = false;
 
-    private bool isPlayerNear = false; // Para saber si el jugador está cerca
-    private bool canFeed = false; // Para saber si ya se puede alimentar
-
-    private GameClock gameClock; // Referencia al reloj
-
-    void Start()
+    private void Start()
     {
-        foodPanel.SetActive(false); // Ocultar el panel de comida al iniciar
+        if (foodPanelUI != null)
+            foodPanelUI.SetActive(false);
 
-        // Hacemos invisibles todos los alimentos
-        foreach (GameObject food in foodObjects)
+        // Al inicio, ocultamos las comidas
+        foreach (var food in foodObjects)
         {
             food.SetActive(false);
         }
-
-        foodButton.onClick.AddListener(MakeFoodVisible); // Asociamos el botón a la función
-        gameClock = FindObjectOfType<GameClock>(); // Buscamos el GameClock en la escena
     }
 
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        if (gameClock != null && gameClock.GetHour() >= 14)
+        if (other.CompareTag("Player") && gameClock != null && gameClock.CanFeedPrisoners())
         {
-            canFeed = true;
-        }
-
-        if (isPlayerNear && canFeed)
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                foodPanel.SetActive(true);
-            }
-        }
-        else
-        {
-            if (!isPlayerNear)
-            {
-                foodPanel.SetActive(false); // Ocultamos el panel si el jugador se aleja
-            }
+            foodPanelUI.SetActive(true);
+            playerInRange = true;
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            isPlayerNear = true;
+            foodPanelUI.SetActive(false);
+            playerInRange = false;
         }
     }
 
-    void OnTriggerExit(Collider other)
+    public void SpawnFood()
     {
-        if (other.CompareTag("Player"))
-        {
-            isPlayerNear = false;
-            foodPanel.SetActive(false); // Cerramos el panel también al salir
-        }
-    }
+        if (!playerInRange) return;
 
-    void MakeFoodVisible()
-    {
-        // Activar todos los alimentos
-        foreach (GameObject food in foodObjects)
+        foreach (var food in foodObjects)
         {
-            food.SetActive(true);
+            food.SetActive(true); // Aparecen los objetos
         }
 
-        foodPanel.SetActive(false); // Cerrar el panel de comida
+        foodPanelUI.SetActive(false); // Ocultamos el panel después
     }
 }
+

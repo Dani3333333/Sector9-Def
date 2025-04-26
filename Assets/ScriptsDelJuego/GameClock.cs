@@ -143,13 +143,12 @@ public class GameClock : MonoBehaviour
         // Ejemplo: PrisonerManager.Instance.KillLeastHappy();
         Debug.Log("Un prisionero ha muerto por no recibir comida.");
     }
-    public bool IsFeedingTime()
+    public bool CanFeedPrisoners()
     {
-        return (hour >= 14);
+        return hour >= 14;
     }
-    public int GetHour()
-    {
-        return hour;
-    }
+
+
+
 
 }
