@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Prisionero
   - Bed
+  - CamaPrionero
   layers:
   - Default
   - TransparentFX

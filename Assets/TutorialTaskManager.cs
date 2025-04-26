@@ -27,10 +27,21 @@ public class TutorialTaskManager : MonoBehaviour
     {
         foreach (var task in tasks)
         {
-            task.detailToggle.onValueChanged.AddListener((value) =>
+            //  Al iniciar, desmarcar ambos toggles
+            if (task.wallToggle != null)
+                task.wallToggle.isOn = false;
+
+            if (task.detailToggle != null)
+                task.detailToggle.isOn = false;
+
+            // Luego conectar el evento de sincronización
+            if (task.detailToggle != null && task.wallToggle != null)
             {
-                task.wallToggle.isOn = value;
-            });
+                task.detailToggle.onValueChanged.AddListener((value) =>
+                {
+                    task.wallToggle.isOn = value;
+                });
+            }
         }
     }
 }

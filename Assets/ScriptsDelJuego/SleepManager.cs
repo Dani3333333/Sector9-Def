@@ -23,31 +23,67 @@ public class SleepManager : MonoBehaviour
     public TextMeshProUGUI dayText;
     public float dayTextDuration = 2.5f;
 
+    [Header("Tareas Tutorial")]
+    public GameObject completeAllTasksText; // NUEVO: El texto que avisa que faltan tareas
+
     private bool canSleep = false;
     private bool isSleeping = false;
 
     public GameObject sleepText;
 
+    void Start()
+    {
+        if (completeAllTasksText != null)
+            completeAllTasksText.SetActive(false); // Asegurar que empieza apagado
+    }
+
     void Update()
     {
         if (canSleep && Input.GetKeyDown(KeyCode.E) && !isSleeping)
         {
-            // Verificar si puede dormir (hasta el Día 3)
-            if (GameManager.Instance.CanSleep())
+            if (AreAllTasksCompleted())
             {
-                StartCoroutine(SleepWithFadeAndVideoRoutine());
+                if (GameManager.Instance.CanSleep())
+                {
+                    StartCoroutine(SleepWithFadeAndVideoRoutine());
+                }
+                else
+                {
+                    Debug.Log("Ya se han completado los 3 días.");
+                }
             }
             else
             {
-                Debug.Log("Ya se han completado los 3 días.");
+                Debug.Log("No puedes dormir todavía, completa todas las tareas!");
+                StartCoroutine(ShowIncompleteTasksMessage());
             }
+        }
+    }
+
+    private bool AreAllTasksCompleted()
+    {
+        foreach (var task in TutorialTaskManager.Instance.tasks)
+        {
+            if (!task.detailToggle.isOn) // Si algún toggle no está activado...
+                return false;
+        }
+        return true;
+    }
+
+    IEnumerator ShowIncompleteTasksMessage()
+    {
+        if (completeAllTasksText != null)
+        {
+            completeAllTasksText.SetActive(true);
+            yield return new WaitForSeconds(2f); // El mensaje dura 2 segundos
+            completeAllTasksText.SetActive(false);
         }
     }
 
     IEnumerator SleepWithFadeAndVideoRoutine()
     {
         isSleeping = true;
-        hud.SetActive(false);  // Desactivar el HUD
+        hud.SetActive(false);
         sleepPromptText.SetActive(false);
 
         yield return StartCoroutine(FadeToBlack());
@@ -73,15 +109,11 @@ public class SleepManager : MonoBehaviour
         sleepVideoImage.SetActive(false);
         videoPlayer.gameObject.SetActive(false);
 
-        gameClock.ResetClock();  // Reiniciar el reloj
+        gameClock.ResetClock();
 
-        // Avanzar al siguiente día
         GameManager.Instance.NextDay();
-
         FindObjectOfType<InspectionManager>().ReplenishItems();
 
-
-        // Mostrar texto del día y hacer fade del fondo negro
         yield return StartCoroutine(ShowDayTextAndFadeFromBlack("Día " + GameManager.Instance.currentDay));
 
         FindObjectOfType<DayMessageUI>().ShowDayMessage(GameManager.Instance.currentDay);
@@ -89,7 +121,6 @@ public class SleepManager : MonoBehaviour
 
         isSleeping = false;
         canSleep = true;
-
     }
 
     IEnumerator ShowDayTextAndFadeFromBlack(string text)
@@ -99,7 +130,6 @@ public class SleepManager : MonoBehaviour
         dayText.transform.localScale = Vector3.zero;
         dayText.gameObject.SetActive(true);
 
-        // Fade in con escalado
         float t = 0f;
         while (t < 0.3f)
         {
@@ -115,10 +145,8 @@ public class SleepManager : MonoBehaviour
         yield return new WaitForSeconds(0.05f);
         dayText.transform.localScale = Vector3.one;
 
-        // Esperar el resto de tiempo antes de desvanecer
         yield return new WaitForSeconds(dayTextDuration - fadeDuration);
 
-        // Fade out del panel y el texto al mismo tiempo
         t = 0f;
         while (t < fadeDuration)
         {
@@ -133,10 +161,8 @@ public class SleepManager : MonoBehaviour
         dayText.gameObject.SetActive(false);
 
         isSleeping = false;
-        // Activar el HUD después de mostrar el día
         hud.SetActive(true);
         canSleep = true;
-
     }
 
     IEnumerator FadeToBlack()
