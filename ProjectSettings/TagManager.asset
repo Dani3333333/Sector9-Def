@@ -7,6 +7,7 @@ TagManager:
   - Prisionero
   - Bed
   - CamaPrionero
+  - Objeto
   layers:
   - Default
   - TransparentFX
