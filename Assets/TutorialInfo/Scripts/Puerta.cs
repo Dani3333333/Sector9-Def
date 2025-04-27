@@ -14,6 +14,8 @@ public class Puerta : MonoBehaviour
 
     public TextMeshProUGUI interactionPrompt; // <- NUEVO
 
+    public PrisonerPatrol prisonerPatrol; // Referencia al script de patrol del prisionero
+
     void Start()
     {
         initialPosition = transform.position;
@@ -25,22 +27,34 @@ public class Puerta : MonoBehaviour
 
     void Update()
     {
-        if (puedeAbrir && Input.GetKeyDown(KeyCode.E))
+        if (puedeAbrir && Input.GetKeyDown(KeyCode.P))
         {
             isOpen = !isOpen;
 
             // Actualiza el texto del prompt si sigue visible
             if (interactionPrompt != null)
-                interactionPrompt.text = isOpen ? "[E] Cerrar puerta" : "[E] Abrir puerta";
+                interactionPrompt.text = isOpen ? "[P] Cerrar puerta" : "[P] Abrir puerta";
         }
 
         if (isOpen)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+
+            // Si la puerta se abre, hacemos que el prisionero salga de la celda
+            if (!prisonerPatrol.isOutsideCell)
+            {
+                prisonerPatrol.ExitCell();
+            }
         }
         else
         {
             transform.position = Vector3.MoveTowards(transform.position, initialPosition, speed * Time.deltaTime);
+
+            // Si la puerta se cierra y el prisionero está fuera de la celda, lo hacemos regresar
+            if (prisonerPatrol.isOutsideCell)
+            {
+                prisonerPatrol.ReturnToCell();
+            }
         }
     }
 
@@ -52,7 +66,7 @@ public class Puerta : MonoBehaviour
 
             if (interactionPrompt != null && !interactionPrompt.gameObject.activeSelf)
             {
-                interactionPrompt.text = isOpen ? "[E] Cerrar puerta" : "[E] Abrir puerta";
+                interactionPrompt.text = isOpen ? "[P] Cerrar puerta" : "[P] Abrir puerta";
                 interactionPrompt.gameObject.SetActive(true);
             }
         }
