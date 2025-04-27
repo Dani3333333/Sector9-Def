@@ -10,7 +10,6 @@ public class CellInspectionManager : MonoBehaviour
     public Text itemsText;
     public GameObject itemButtonPrefab;
     public Transform itemButtonContainer;
-
     public TextMeshProUGUI interactionPrompt;
 
     private Dictionary<int, Dictionary<string, List<string>>> cellItems = new Dictionary<int, Dictionary<string, List<string>>>();
@@ -26,7 +25,7 @@ public class CellInspectionManager : MonoBehaviour
     {
         "Cuchillo", "Mechero", "Revista", "Llave", "Celular", "Papel", "Navaja", "Bolígrafo", "Encendedor",
         "Destornillador", "Tijeras", "Cable", "Goma de mascar", "Cuerda", "Piedra", "Tarjeta de crédito",
-        "Batería", "Chicle", "CD", "Espejo", "Llave inglesa", "Aguja", "Cinta adhesiva", "Grapadora"
+        "Batería", "Chicle", "CD", "Espejo", "Llave inglesa", "Cinta adhesiva", "Grapadora"
     };
 
     private HashSet<string> dangerousItems = new HashSet<string>
@@ -69,7 +68,9 @@ public class CellInspectionManager : MonoBehaviour
         if (currentZone == null) return;
 
         isInspecting = true;
+        LogicaPersonaje1.isInspecting = true; // Bloqueamos movimiento
         itemsPanel.SetActive(true);
+
         GenerateButtons();
     }
 
@@ -77,6 +78,8 @@ public class CellInspectionManager : MonoBehaviour
     {
         itemsPanel.SetActive(false);
         isInspecting = false;
+        LogicaPersonaje1.isInspecting = false; // Desbloqueamos movimiento
+
         if (interactionPrompt != null && nearInspectionZone)
         {
             interactionPrompt.text = "[E] Inspeccionar " + currentZone.zoneType;
@@ -86,14 +89,17 @@ public class CellInspectionManager : MonoBehaviour
 
     void GenerateButtons()
     {
+        // Limpia los botones viejos
         foreach (Button btn in itemButtons)
         {
             Destroy(btn.gameObject);
         }
         itemButtons.Clear();
 
+        // Carga la lista de objetos de la celda/zona
         List<string> items = GetItemsList(currentZone.cellId, currentZone.zoneType);
 
+        // Crea un botón por cada ítem
         foreach (string item in items)
         {
             GameObject buttonObj = Instantiate(itemButtonPrefab, itemButtonContainer);
@@ -104,6 +110,7 @@ public class CellInspectionManager : MonoBehaviour
             itemButtons.Add(button);
         }
 
+        // Selecciona el primer botón si hay
         if (itemButtons.Count > 0)
         {
             selectedButtonIndex = 0;
@@ -139,35 +146,40 @@ public class CellInspectionManager : MonoBehaviour
 
     void RemoveSelectedItem()
     {
-        if (itemButtons.Count == 0) return;
+        if (itemButtons.Count == 0 || currentZone == null) return;
 
         Button selectedButton = itemButtons[selectedButtonIndex];
         string itemName = selectedButton.GetComponentInChildren<Text>().text;
 
+        // Baja felicidad si el ítem NO es peligroso
         if (!dangerousItems.Contains(itemName))
         {
-            if (sliderControllers != null && currentZone != null)
+            if (sliderControllers != null && currentZone.cellId - 1 >= 0 && currentZone.cellId - 1 < sliderControllers.Length)
             {
                 sliderControllers[currentZone.cellId - 1].DecreaseHappiness(10f);
             }
         }
 
+        // Elimina visualmente
         itemButtons.RemoveAt(selectedButtonIndex);
         Destroy(selectedButton.gameObject);
 
+        // Elimina del inventario real
         if (cellItems.ContainsKey(currentZone.cellId) && cellItems[currentZone.cellId].ContainsKey(currentZone.zoneType))
         {
             cellItems[currentZone.cellId][currentZone.zoneType].Remove(itemName);
         }
 
-        if (itemButtons.Count == 0)
-        {
-            selectedButtonIndex = 0;
-        }
-        else
+        // Actualiza selección
+        if (itemButtons.Count > 0)
         {
             selectedButtonIndex = Mathf.Clamp(selectedButtonIndex, 0, itemButtons.Count - 1);
             SelectButton(itemButtons[selectedButtonIndex]);
+        }
+        else
+        {
+            // Si ya no quedan ítems, cerramos la inspección
+            CloseItemsPanel();
         }
     }
 
@@ -251,4 +263,3 @@ public class CellInspectionManager : MonoBehaviour
         }
     }
 }
-
