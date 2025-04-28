@@ -1,28 +1,30 @@
-using System.Collections.Generic;
+using System.Collections;
+using System.Collections.Generic; 
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class MerchantInteractionManager : MonoBehaviour
 {
     public GameObject panelDialogo;
     public GameObject panelVenta;
     public GameObject panelFinal;
-    public GameObject vendedorUI; // El panel que pone "VENDEDOR" en el mundo
+    public GameObject vendedorUI;
+    public GameObject interactPrompt;
 
     public TextMeshProUGUI dialogoTexto;
     public Button negociarButton;
 
     public Transform prisionerosContainer;
-    public GameObject prisioneroButtonPrefab; // Prefab de botón para prisioneros
+    public GameObject prisioneroButtonPrefab;
 
     public TextMeshProUGUI finalTexto;
 
     private bool nearVendedor = false;
-    private int diaActual = 3; // Asumimos día 3
-
     private List<Preso> prisioneros = new List<Preso>();
     private int selectedIndex = 0;
+    private CanvasGroup panelFinalCanvasGroup; // << Añadido para fade
 
     void Start()
     {
@@ -30,40 +32,75 @@ public class MerchantInteractionManager : MonoBehaviour
         panelVenta.SetActive(false);
         panelFinal.SetActive(false);
 
-        // Rellenar prisioneros fake (puedes conectar con tus datos reales)
+        if (vendedorUI != null)
+            vendedorUI.SetActive(false);
+
+        if (interactPrompt != null)
+            interactPrompt.SetActive(false);
+
         prisioneros.Add(new Preso("Preso1", 80));
         prisioneros.Add(new Preso("Preso2", 60));
         prisioneros.Add(new Preso("Preso3", 30));
         prisioneros.Add(new Preso("Preso4", 90));
 
         negociarButton.onClick.AddListener(StartVenta);
+
+        // Preparar fade
+        panelFinalCanvasGroup = panelFinal.GetComponent<CanvasGroup>();
+        if (panelFinalCanvasGroup == null)
+            panelFinalCanvasGroup = panelFinal.AddComponent<CanvasGroup>();
+        panelFinalCanvasGroup.alpha = 0;
     }
 
     void Update()
     {
-        if (diaActual != 3) return;
-
-        if (nearVendedor && Input.GetKeyDown(KeyCode.E))
+        if (GameManager.Instance.currentDay == 3)
         {
-            OpenDialogo();
+            if (vendedorUI != null && !vendedorUI.activeSelf)
+                vendedorUI.SetActive(true);
+
+            if (nearVendedor)
+            {
+                if (interactPrompt != null && !interactPrompt.activeSelf)
+                    interactPrompt.SetActive(true);
+
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    OpenDialogo();
+                    interactPrompt.SetActive(false);
+                }
+            }
+            else
+            {
+                if (interactPrompt != null && interactPrompt.activeSelf)
+                    interactPrompt.SetActive(false);
+            }
+
+            if (panelVenta.activeSelf)
+            {
+                if (Input.GetKeyDown(KeyCode.UpArrow))
+                {
+                    selectedIndex = (selectedIndex - 1 + prisionerosContainer.childCount) % prisionerosContainer.childCount;
+                    HighlightButton(selectedIndex);
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    selectedIndex = (selectedIndex + 1) % prisionerosContainer.childCount;
+                    HighlightButton(selectedIndex);
+                }
+                if (Input.GetKeyDown(KeyCode.V))
+                {
+                    SellPrisionero(selectedIndex);
+                }
+            }
         }
-
-        if (panelVenta.activeSelf)
+        else
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                selectedIndex = (selectedIndex - 1 + prisionerosContainer.childCount) % prisionerosContainer.childCount;
-                HighlightButton(selectedIndex);
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                selectedIndex = (selectedIndex + 1) % prisionerosContainer.childCount;
-                HighlightButton(selectedIndex);
-            }
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                SellPrisionero(selectedIndex);
-            }
+            if (vendedorUI != null && vendedorUI.activeSelf)
+                vendedorUI.SetActive(false);
+
+            if (interactPrompt != null && interactPrompt.activeSelf)
+                interactPrompt.SetActive(false);
         }
     }
 
@@ -72,6 +109,9 @@ public class MerchantInteractionManager : MonoBehaviour
         LogicaPersonaje1.isTrading = true;
         panelDialogo.SetActive(true);
         dialogoTexto.text = "Hola, soy el comerciante. Espero que hayas cuidado bien de los prisioneros. ¿Quieres negociar?";
+
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(negociarButton.gameObject);
     }
 
     void StartVenta()
@@ -79,11 +119,8 @@ public class MerchantInteractionManager : MonoBehaviour
         panelDialogo.SetActive(false);
         panelVenta.SetActive(true);
 
-        // Crear botones
         foreach (Transform child in prisionerosContainer)
-        {
             Destroy(child.gameObject);
-        }
 
         for (int i = 0; i < prisioneros.Count; i++)
         {
@@ -91,9 +128,10 @@ public class MerchantInteractionManager : MonoBehaviour
             TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
 
             int happiness = prisioneros[i].happiness;
-            int precio = happiness * 10; // Precio = felicidad x10 dólares
+            int precio = happiness * 10;
 
-            btnText.text = $"{prisioneros[i].name} - Felicidad: {happiness}% - Precio: ${precio}";
+            // Poner cada dato en una línea separada para que sea más legible
+            btnText.text = $"{prisioneros[i].name}\tFelicidad: {happiness}%\t|\tPrecio: ${precio}";
         }
 
         HighlightButton(0);
@@ -115,27 +153,44 @@ public class MerchantInteractionManager : MonoBehaviour
         panelVenta.SetActive(false);
         panelFinal.SetActive(true);
 
-        // Activar máquina de escribir
-        TypewriterEffect typewriter = panelFinal.GetComponent<TypewriterEffect>();
-        typewriter.StartTyping("¡Felicidades, has vendido tu primer prisionero!\n\nEsto ha sido todo del Vertical Slice, esperamos que lo hayas disfrutado.");
+        StartCoroutine(FadeInPanelFinal());
 
-        // Opcionalmente, podrías poner pantalla en negro después de unos segundos
+        // Buscar correctamente el TypewriterEffect donde esté
+        TypewriterEffect typewriter = panelFinal.GetComponentInChildren<TypewriterEffect>();
+        if (typewriter != null)
+        {
+            typewriter.StartTyping("¡Felicidades, has vendido tu primer prisionero!\n\nEsto ha sido todo del Vertical Slice, esperamos que lo hayas disfrutado.");
+        }
+        else
+        {
+            Debug.LogWarning("No se encontró TypewriterEffect en PanelFinal.");
+        }
+    }
+
+    IEnumerator FadeInPanelFinal()
+    {
+        float duration = 1.0f; // 1 segundo de fade
+        float elapsed = 0f;
+        panelFinalCanvasGroup.alpha = 0;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            panelFinalCanvasGroup.alpha = Mathf.Clamp01(elapsed / duration);
+            yield return null;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject == vendedorUI)
-        {
+        if (other.CompareTag("Player"))
             nearVendedor = true;
-        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject == vendedorUI)
-        {
+        if (other.CompareTag("Player"))
             nearVendedor = false;
-        }
     }
 
     class Preso

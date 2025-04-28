@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
+
 public class TypewriterEffect : MonoBehaviour
 {
     public TextMeshProUGUI targetText;
@@ -9,6 +10,9 @@ public class TypewriterEffect : MonoBehaviour
 
     public void StartTyping(string fullText)
     {
+        if (targetText == null)
+            targetText = GetComponent<TextMeshProUGUI>();
+
         StartCoroutine(TypeText(fullText));
     }
 

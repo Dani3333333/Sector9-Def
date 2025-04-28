@@ -10,9 +10,7 @@ public class LogicaPersonaje1 : MonoBehaviour
     public Transform cameraTransform; // Referencia a la cámara
 
     public static bool isInspecting = false; // Variable para bloquear movimiento
-
-    public static bool isTrading = false;
-
+    public static bool isTrading = false; // Variable para bloquear movimiento cuando comerciamos
 
     void Start()
     {
@@ -22,6 +20,8 @@ public class LogicaPersonaje1 : MonoBehaviour
 
     void Update()
     {
+        if (isTrading) return;  
+
         if (!isInspecting) // SOLO SE MUEVE SI NO ESTÁ INSPECCIONANDO
         {
             float moveX = Input.GetAxis("Horizontal");
@@ -42,9 +42,6 @@ public class LogicaPersonaje1 : MonoBehaviour
             // Si está inspeccionando, solo dejamos gravedad
             rb.velocity = new Vector3(0, rb.velocity.y - gravity * Time.deltaTime, 0);
         }
-
-        if (isTrading) return;
-
     }
 
     void OnCollisionStay(Collision collision)
