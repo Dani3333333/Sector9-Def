@@ -33882,10 +33882,10 @@ MonoBehaviour:
   itemButtonContainer: {fileID: 671859497}
   interactionPrompt: {fileID: 670790968}
   sliderControllers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1787747277}
+  - {fileID: 1639763028}
+  - {fileID: 1625930445}
+  - {fileID: 25560596}
 --- !u!1 &2105740292
 GameObject:
   m_ObjectHideFlags: 0
