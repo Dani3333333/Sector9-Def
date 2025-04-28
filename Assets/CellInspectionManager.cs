@@ -160,15 +160,15 @@ public class CellInspectionManager : MonoBehaviour
             }
         }
 
-        // Elimina visualmente
-        itemButtons.RemoveAt(selectedButtonIndex);
-        Destroy(selectedButton.gameObject);
-
         // Elimina del inventario real
         if (cellItems.ContainsKey(currentZone.cellId) && cellItems[currentZone.cellId].ContainsKey(currentZone.zoneType))
         {
             cellItems[currentZone.cellId][currentZone.zoneType].Remove(itemName);
         }
+
+        // Elimina visualmente
+        itemButtons.RemoveAt(selectedButtonIndex);
+        Destroy(selectedButton.gameObject);
 
         // Actualiza selección
         if (itemButtons.Count > 0)
@@ -178,10 +178,10 @@ public class CellInspectionManager : MonoBehaviour
         }
         else
         {
-            // Si ya no quedan ítems, cerramos la inspección
             CloseItemsPanel();
         }
     }
+
 
     void HandleKeyboardNavigation(List<Button> buttonList)
     {
@@ -210,18 +210,30 @@ public class CellInspectionManager : MonoBehaviour
 
     public void ReplenishItems()
     {
-        foreach (var cell in cellItems)
+        foreach (var cellEntry in cellItems)
         {
-            foreach (var zone in cell.Value)
+            int cellId = cellEntry.Key;
+            Dictionary<string, List<string>> zones = cellEntry.Value;
+
+            List<string> zoneTypes = new List<string> { "Cama", "Vater", "Lavamanos" };     
+
+            foreach (string zoneType in zoneTypes)
             {
-                List<string> currentItems = zone.Value;
+                if (!zones.ContainsKey(zoneType))
+                {
+                    zones[zoneType] = new List<string>();
+                }
+
+                List<string> currentItems = zones[zoneType];
                 List<string> availableItems = new List<string>(possibleItems);
 
+                // Elimina los que ya están en el mobiliario de la lista disponible
                 foreach (string existingItem in currentItems)
                 {
                     availableItems.Remove(existingItem);
                 }
 
+                // Rellena hasta tener 4 objetos
                 while (currentItems.Count < 4 && availableItems.Count > 0)
                 {
                     int randomIndex = Random.Range(0, availableItems.Count);

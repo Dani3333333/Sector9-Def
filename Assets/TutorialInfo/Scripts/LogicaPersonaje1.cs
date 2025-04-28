@@ -11,6 +11,9 @@ public class LogicaPersonaje1 : MonoBehaviour
 
     public static bool isInspecting = false; // Variable para bloquear movimiento
 
+    public static bool isTrading = false;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -39,6 +42,9 @@ public class LogicaPersonaje1 : MonoBehaviour
             // Si está inspeccionando, solo dejamos gravedad
             rb.velocity = new Vector3(0, rb.velocity.y - gravity * Time.deltaTime, 0);
         }
+
+        if (isTrading) return;
+
     }
 
     void OnCollisionStay(Collision collision)
