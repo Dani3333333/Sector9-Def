@@ -26,6 +26,9 @@ public class SleepManager : MonoBehaviour
     [Header("Tareas Tutorial")]
     public GameObject completeAllTasksText; // NUEVO: El texto que avisa que faltan tareas
 
+    [Header("Manager de inspección")]
+    public InspectionManager inspectionManager; // <- AÑADIDO
+
     private bool canSleep = false;
     private bool isSleeping = false;
 
@@ -112,7 +115,16 @@ public class SleepManager : MonoBehaviour
         gameClock.ResetClock();
 
         GameManager.Instance.NextDay();
-        FindObjectOfType<InspectionManager>().ReplenishItems();
+
+        // CORREGIDO: Usar el método correcto del InspectionManager
+        if (inspectionManager != null)
+        {
+            inspectionManager.ReplenishAllPrisonerItems();
+        }
+        else
+        {
+            Debug.LogWarning("InspectionManager no asignado en SleepManager!");
+        }
 
         yield return StartCoroutine(ShowDayTextAndFadeFromBlack("Día " + GameManager.Instance.currentDay));
 

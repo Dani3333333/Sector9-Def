@@ -13,29 +13,33 @@ public class InspectionManager : MonoBehaviour
     public Button armButton, torsoButton, legButton;
     public GameObject itemButtonPrefab;
     public Transform itemButtonContainer;
+    public TextMeshProUGUI interactionPrompt;
+    public SliderController sliderController;
 
-    public TextMeshProUGUI interactionPrompt; // <- NUEVO
-
-    private Dictionary<string, List<string>> extremitiesItems = new Dictionary<string, List<string>>();
+    private Dictionary<PrisonerPatrol, Dictionary<string, List<string>>> prisonerItems = new Dictionary<PrisonerPatrol, Dictionary<string, List<string>>>();
     private List<Button> buttons = new List<Button>();
     private List<Button> itemButtons = new List<Button>();
     private int selectedButtonIndex = 0;
     private bool isInspecting = false;
     private bool nearPrisoner = false;
     private string currentExtremity = "";
-
-    public SliderController sliderController;
+    private PrisonerPatrol currentPrisoner;
 
     private List<string> possibleItems = new List<string>
     {
-        "Cuchillo", "Mechero", "Revista", "Llave", "Celular", "Papel", "Navaja", "Bolígrafo", "Encendedor",
-        "Destornillador", "Tijeras", "Cable", "Goma de mascar", "Cuerda", "Piedra", "Tarjeta de crédito",
-        "Batería", "Chicle", "CD", "Espejo", "Llave inglesa", "Aguja", "Cinta adhesiva", "Grapadora"
+        // PELIGROSOS
+        "Cuchillo", "Navaja", "Llave inglesa", "Destornillador", "Tijeras", "Cuerda", "Cable", "Batería", "Aguja afilada", "Barra metálica",
+
+        // NO PELIGROSOS
+        "Mechero", "Encendedor", "Chicle", "Goma de mascar", "Revista", "Papel", "Bolígrafo", "Espejo roto", "CD", "Tarjeta de crédito falsa",
+        "Carta escondida", "Dinero falsificado", "Piedra pequeña", "Cinta adhesiva", "Grapadora", "Papel de fumar",
+        "Comida escondida", "Cepillo de dientes", "Vaso de plástico", "Calcetines extra", "Papel higiénico",
+        "Peine", "Pequeño espejo", "Móvil escondido", "Tabaco", "Barra de jabón", "Pastillas sospechosas"
     };
 
     private HashSet<string> dangerousItems = new HashSet<string>
     {
-        "Cuchillo", "Navaja", "Llave", "Destornillador", "Tijeras", "Cable", "Cuerda", "Batería", "Llave inglesa", "Aguja"
+        "Cuchillo", "Navaja", "Llave inglesa", "Destornillador", "Tijeras", "Cuerda", "Cable", "Batería", "Aguja afilada", "Barra metálica"
     };
 
     void Start()
@@ -50,9 +54,7 @@ public class InspectionManager : MonoBehaviour
 
         extremityPanel.SetActive(false);
         itemsPanel.SetActive(false);
-        if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false); // Oculta al inicio
-
-        GenerateRandomItems();
+        if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false);
     }
 
     void Update()
@@ -60,31 +62,30 @@ public class InspectionManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.E) && nearPrisoner && !isInspecting)
         {
             OpenExtremityPanel();
-            if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false); // Oculta el mensaje
+            if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false);
         }
 
         if (extremityPanel.activeSelf)
-        {
             HandleKeyboardNavigation(buttons);
-        }
         else if (itemsPanel.activeSelf)
-        {
             HandleKeyboardNavigation(itemButtons);
-        }
 
         if (Input.GetKeyDown(KeyCode.H))
-        {
             RemoveSelectedItem();
-        }
 
         if (Input.GetKeyDown(KeyCode.Backspace))
-        {
             HandleEscape();
-        }
     }
 
     void OpenExtremityPanel()
     {
+        if (currentPrisoner == null) return;
+
+        if (!prisonerItems.ContainsKey(currentPrisoner))
+        {
+            prisonerItems[currentPrisoner] = GenerateRandomItemsPerPrisoner();
+        }
+
         extremityPanel.SetActive(true);
         LogicaPersonaje1.isInspecting = true;
         isInspecting = true;
@@ -146,11 +147,13 @@ public class InspectionManager : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(button.gameObject);
     }
 
-    private void GenerateRandomItems()
+    private Dictionary<string, List<string>> GenerateRandomItemsPerPrisoner()
     {
-        extremitiesItems["Brazos"] = GetRandomItems();
-        extremitiesItems["Torso"] = GetRandomItems();
-        extremitiesItems["Piernas"] = GetRandomItems();
+        Dictionary<string, List<string>> itemsPerExtremity = new Dictionary<string, List<string>>();
+        itemsPerExtremity["Brazos"] = GetRandomItems();
+        itemsPerExtremity["Torso"] = GetRandomItems();
+        itemsPerExtremity["Piernas"] = GetRandomItems();
+        return itemsPerExtremity;
     }
 
     private List<string> GetRandomItems()
@@ -170,13 +173,15 @@ public class InspectionManager : MonoBehaviour
 
     public void ShowItems(string extremity)
     {
+        if (currentPrisoner == null || !prisonerItems.ContainsKey(currentPrisoner)) return;
+
         currentExtremity = extremity;
         itemsPanel.SetActive(true);
         extremityPanel.SetActive(false);
-        GenerateButtons(extremity);
+        GenerateButtons(currentPrisoner, extremity);
     }
 
-    void GenerateButtons(string extremity)
+    void GenerateButtons(PrisonerPatrol prisoner, string extremity)
     {
         foreach (Button btn in itemButtons)
         {
@@ -184,14 +189,13 @@ public class InspectionManager : MonoBehaviour
         }
         itemButtons.Clear();
 
-        List<string> items = extremitiesItems[extremity];
+        List<string> items = prisonerItems[prisoner][extremity];
 
         foreach (string item in items)
         {
             GameObject buttonObj = Instantiate(itemButtonPrefab, itemButtonContainer);
             Button button = buttonObj.GetComponent<Button>();
             Text buttonText = buttonObj.GetComponentInChildren<Text>();
-
             buttonText.text = item;
             itemButtons.Add(button);
         }
@@ -221,9 +225,9 @@ public class InspectionManager : MonoBehaviour
         itemButtons.RemoveAt(selectedButtonIndex);
         Destroy(selectedButton.gameObject);
 
-        if (extremitiesItems.ContainsKey(currentExtremity))
+        if (currentPrisoner != null && prisonerItems.ContainsKey(currentPrisoner))
         {
-            extremitiesItems[currentExtremity].Remove(itemName);
+            prisonerItems[currentPrisoner][currentExtremity].Remove(itemName);
         }
 
         if (itemButtons.Count == 0)
@@ -237,39 +241,13 @@ public class InspectionManager : MonoBehaviour
         }
     }
 
-    public void ReplenishItems()
-    {
-        foreach (var key in new List<string> { "Brazos", "Torso", "Piernas" })
-        {
-            if (!extremitiesItems.ContainsKey(key))
-            {
-                extremitiesItems[key] = new List<string>();
-            }
-
-            List<string> currentItems = extremitiesItems[key];
-            List<string> availableItems = new List<string>(possibleItems);
-
-            foreach (string existingItem in currentItems)
-            {
-                availableItems.Remove(existingItem);
-            }
-
-            while (currentItems.Count < 3 && availableItems.Count > 0)
-            {
-                int randomIndex = Random.Range(0, availableItems.Count);
-                currentItems.Add(availableItems[randomIndex]);
-                availableItems.RemoveAt(randomIndex);
-            }
-
-            extremitiesItems[key] = currentItems;
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Prisionero"))
         {
             nearPrisoner = true;
+            currentPrisoner = other.GetComponent<PrisonerPatrol>();
+
             if (!isInspecting && interactionPrompt != null)
             {
                 interactionPrompt.text = "[E] Cachear";
@@ -282,11 +260,26 @@ public class InspectionManager : MonoBehaviour
     {
         if (other.CompareTag("Prisionero"))
         {
-            nearPrisoner = false;
-            if (interactionPrompt != null)
+            if (other.GetComponent<PrisonerPatrol>() == currentPrisoner)
             {
-                interactionPrompt.gameObject.SetActive(false);
+                nearPrisoner = false;
+                currentPrisoner = null;
+
+                if (interactionPrompt != null)
+                {
+                    interactionPrompt.gameObject.SetActive(false);
+                }
             }
+        }
+    }
+
+    public void ReplenishAllPrisonerItems()
+    {
+        List<PrisonerPatrol> allPrisoners = new List<PrisonerPatrol>(prisonerItems.Keys);
+
+        foreach (var prisoner in allPrisoners)
+        {
+            prisonerItems[prisoner] = GenerateRandomItemsPerPrisoner();
         }
     }
 }
