@@ -26,6 +26,9 @@ public class MerchantInteractionManager : MonoBehaviour
     private int selectedIndex = 0;
     private CanvasGroup panelFinalCanvasGroup; // << Añadido para fade
 
+    public Button salirButton; // <<<< Añadido
+
+
     void Start()
     {
         panelDialogo.SetActive(false);
@@ -108,7 +111,7 @@ public class MerchantInteractionManager : MonoBehaviour
     {
         LogicaPersonaje1.isTrading = true;
         panelDialogo.SetActive(true);
-        dialogoTexto.text = "Hola, soy el comerciante. Espero que hayas cuidado bien de los prisioneros. ¿Quieres negociar?";
+        dialogoTexto.text = "Si quieres ganar unos buenos dólares... pulsa [Enter] para negociar conmigo.";
 
         EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(negociarButton.gameObject);
@@ -155,17 +158,24 @@ public class MerchantInteractionManager : MonoBehaviour
 
         StartCoroutine(FadeInPanelFinal());
 
-        // Buscar correctamente el TypewriterEffect donde esté
         TypewriterEffect typewriter = panelFinal.GetComponentInChildren<TypewriterEffect>();
         if (typewriter != null)
         {
-            typewriter.StartTyping("¡Felicidades, has vendido tu primer prisionero!\n\nEsto ha sido todo del Vertical Slice, esperamos que lo hayas disfrutado.");
+            typewriter.StartTyping("Felicidades, has vendido tu primer prisionero!\n\nEsto ha sido todo del Vertical Slice.");
         }
         else
         {
             Debug.LogWarning("No se encontró TypewriterEffect en PanelFinal.");
         }
+
+        if (salirButton != null)
+        {
+            salirButton.gameObject.SetActive(true);
+            salirButton.onClick.RemoveAllListeners(); // Limpia por si acaso
+            salirButton.onClick.AddListener(SalirDelJuego);
+        }
     }
+
 
     IEnumerator FadeInPanelFinal()
     {
@@ -180,6 +190,17 @@ public class MerchantInteractionManager : MonoBehaviour
             yield return null;
         }
     }
+
+    void SalirDelJuego()
+    {
+        Debug.Log("Saliendo del juego...");
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+    Application.Quit();
+#endif
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {
