@@ -236,8 +236,8 @@ GameObject:
   - component: {fileID: 7244302991668380253}
   - component: {fileID: 4597639139782146008}
   - component: {fileID: 1726900675348522186}
-  - component: {fileID: 848200320508466277}
   - component: {fileID: 4352234370337877227}
+  - component: {fileID: 6941425493004514232}
   m_Layer: 0
   m_Name: Prisionero 2
   m_TagString: Prisionero
@@ -374,27 +374,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &848200320508466277
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4228612894348321982}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a6ac629a674348459b9d9c19cb557c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waypoints:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  speed: 0.75
-  isBeingInspected: 0
-  isOutsideCell: 0
-  cellEntrance: {fileID: 0}
 --- !u!114 &4352234370337877227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -409,6 +388,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prisonerID: 2
   prisonerName: 
+--- !u!114 &6941425493004514232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4228612894348321982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a6ac629a674348459b9d9c19cb557c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waypoints: []
+  speed: 2
+  cellEntrance: {fileID: 0}
+  inspectionPoint: {fileID: 0}
+  isBeingInspected: 0
 --- !u!1 &6036588493516804198
 GameObject:
   m_ObjectHideFlags: 0

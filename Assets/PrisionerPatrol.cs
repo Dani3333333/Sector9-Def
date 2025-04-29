@@ -41,7 +41,13 @@ public class PrisonerPatrol : MonoBehaviour
         {
             Patrol();
         }
+        //  Esto evita que se mueva fuera de la celda una vez llega a inspección
+        else if (isOutsideCell && !isWalkingToInspection && !isWalkingBack)
+        {
+            // No hacer nada, esperar quieto
+        }
     }
+
 
     void Patrol()
     {

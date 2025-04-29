@@ -43,8 +43,11 @@ public class Puerta : MonoBehaviour
             }
 
             if (interactionPrompt != null)
+            {
                 interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
+            }
         }
+
 
         Vector3 target = isOpen ? targetPosition : initialPosition;
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);

@@ -42,7 +42,7 @@ public class SleepManager : MonoBehaviour
 
     void Update()
     {
-        if (canSleep && Input.GetKeyDown(KeyCode.E) && !isSleeping)
+        if (canSleep && Input.GetKeyDown(KeyCode.E) && !isSleeping && !LogicaPersonaje1.isInspecting)
         {
             if (AreAllTasksCompleted())
             {
@@ -129,7 +129,7 @@ public class SleepManager : MonoBehaviour
         yield return StartCoroutine(ShowDayTextAndFadeFromBlack("Día " + GameManager.Instance.currentDay));
 
         FindObjectOfType<DayMessageUI>().ShowDayMessage(GameManager.Instance.currentDay);
-        FindObjectOfType<PrisonerManager>().SpawnPrisonersForDay(GameManager.Instance.currentDay);
+        FindObjectOfType<PrisonerManager>().EnablePrisonerForDay(GameManager.Instance.currentDay);
 
         isSleeping = false;
         canSleep = true;
