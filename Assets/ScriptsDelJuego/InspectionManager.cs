@@ -14,7 +14,6 @@ public class InspectionManager : MonoBehaviour
     public GameObject itemButtonPrefab;
     public Transform itemButtonContainer;
     public TextMeshProUGUI interactionPrompt;
-    public SliderController sliderController;
 
     private Dictionary<PrisonerPatrol, Dictionary<string, List<string>>> prisonerItems = new Dictionary<PrisonerPatrol, Dictionary<string, List<string>>>();
     private List<Button> buttons = new List<Button>();
@@ -214,22 +213,30 @@ public class InspectionManager : MonoBehaviour
         Button selectedButton = itemButtons[selectedButtonIndex];
         string itemName = selectedButton.GetComponentInChildren<Text>().text;
 
+        // Si el objeto NO es peligroso, bajar la felicidad del prisionero inspeccionado
         if (!dangerousItems.Contains(itemName))
         {
-            if (sliderController != null)
+            if (currentPrisoner != null)
             {
-                sliderController.DecreaseHappiness(10f);
+                SliderController sc = currentPrisoner.GetComponentInChildren<SliderController>();
+                if (sc != null)
+                {
+                    sc.DecreaseHappiness(10f);
+                }
             }
         }
 
+        // Eliminar visualmente el botón del ítem
         itemButtons.RemoveAt(selectedButtonIndex);
         Destroy(selectedButton.gameObject);
 
+        // Quitar el ítem de la lista de ese prisionero
         if (currentPrisoner != null && prisonerItems.ContainsKey(currentPrisoner))
         {
             prisonerItems[currentPrisoner][currentExtremity].Remove(itemName);
         }
 
+        // Reajustar selección
         if (itemButtons.Count == 0)
         {
             selectedButtonIndex = 0;

@@ -3,29 +3,57 @@ using UnityEngine;
 
 public class PrisonerManager : MonoBehaviour
 {
-    public GameObject prisonerPrefab;
-    public Transform[] spawnPoints; // Asigna 4 puntos en el Inspector
+    [Header("Prefabs y Spawn Points")]
+    public GameObject[] prisonerPrefabs; // Prisionero2, Prisionero3, Prisionero4
+    public Transform[] spawnPoints;      // Sus posiciones de aparición
 
-    private List<GameObject> currentPrisoners = new List<GameObject>();
+    [Header("Waypoints")]
+    public Transform[] patrolParents; // Cada uno tiene hijos que son los puntos de patrulla
+
+    [Header("Entradas de celda")]
+    public Transform[] cellEntrances; // Punto de espera al salir de la celda (uno por prisionero instanciado)
+
+    private int maxPrisoners = 4;
 
     public void SpawnPrisonersForDay(int day)
     {
-        ClearAllPrisoners();
+        // Día 0 ya está Prisonero1 en la escena, así que empezamos desde el Día 1
+        if (day <= 0 || day >= maxPrisoners)
+            return;
 
-        int prisonerCount = Mathf.Min(1 + (day - 1), 4); // Día 1: 2, Día 2: 3, Día 3: 4
-        for (int i = 0; i < prisonerCount; i++)
-        {
-            GameObject newPrisoner = Instantiate(prisonerPrefab, spawnPoints[i].position, spawnPoints[i].rotation);
-            currentPrisoners.Add(newPrisoner);
-        }
-    }
+        int index = day - 1;
 
-    public void ClearAllPrisoners()
-    {
-        foreach (var prisoner in currentPrisoners)
+        GameObject prisonerToSpawn = prisonerPrefabs[index];
+        Transform spawnPoint = spawnPoints[index];
+        Transform patrolParent = patrolParents[index];
+        Transform cellEntrance = (cellEntrances.Length > index) ? cellEntrances[index] : null;
+
+        GameObject prisonerInstance = Instantiate(prisonerToSpawn, spawnPoint.position, spawnPoint.rotation);
+        prisonerInstance.tag = "Prisionero";
+
+        PrisonerPatrol patrol = prisonerInstance.GetComponent<PrisonerPatrol>();
+        if (patrol != null)
         {
-            Destroy(prisoner);
+            // Asignar waypoints de patrulla
+            if (patrolParent != null)
+            {
+                Transform[] waypoints = new Transform[patrolParent.childCount];
+                for (int i = 0; i < patrolParent.childCount; i++)
+                    waypoints[i] = patrolParent.GetChild(i);
+
+                patrol.SetWaypoints(waypoints);
+            }
+
+            // Asignar punto de salida de la celda
+            if (cellEntrance != null)
+            {
+                patrol.SetInspectionPoint(cellEntrance);
+            }
+            else
+            {
+                Debug.LogWarning($"No se asignó cellEntrance para el prisionero {prisonerInstance.name}");
+            }
+
         }
-        currentPrisoners.Clear();
     }
 }

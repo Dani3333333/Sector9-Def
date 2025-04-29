@@ -47,7 +47,6 @@ public class PrisonerHappinessPanel : MonoBehaviour
         {
             panel.anchoredPosition = Vector2.MoveTowards(panel.anchoredPosition, visiblePos, moveSpeed * Time.deltaTime);
 
-            // Actualizar valores del panel
             foreach (var entry in prisonerEntries)
             {
                 entry.UpdateUI();

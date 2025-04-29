@@ -6,15 +6,15 @@ using TMPro;
 public class Puerta : MonoBehaviour
 {
     public float speed;
-    public float moveDistance; // Distancia que se moverá la puerta hacia arriba
+    public float moveDistance;
     private Vector3 initialPosition;
     private Vector3 targetPosition;
     private bool isOpen = false;
     public bool puedeAbrir;
 
-    public TextMeshProUGUI interactionPrompt; // <- NUEVO
+    public TextMeshProUGUI interactionPrompt;
 
-    public PrisonerPatrol prisonerPatrol; // Referencia al script de patrol del prisionero
+    public PrisonerPatrol prisonerPatrol;
 
     void Start()
     {
@@ -22,40 +22,35 @@ public class Puerta : MonoBehaviour
         targetPosition = initialPosition + Vector3.up * moveDistance;
 
         if (interactionPrompt != null)
-            interactionPrompt.gameObject.SetActive(false); // Oculta el texto al iniciar
+            interactionPrompt.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (puedeAbrir && Input.GetKeyDown(KeyCode.P))
+        if (puedeAbrir && Input.GetKeyDown(KeyCode.Q))
         {
             isOpen = !isOpen;
 
-            // Actualiza el texto del prompt si sigue visible
+            // Mover prisionero una sola vez al cambiar el estado
+            if (prisonerPatrol != null)
+            {
+                if (isOpen && !prisonerPatrol.IsOutsideCell)  // Utilizando la propiedad IsOutsideCell
+                {
+                    prisonerPatrol.ExitCell();
+                }
+                else if (!isOpen && prisonerPatrol.IsOutsideCell)  // Utilizando la propiedad IsOutsideCell
+                {
+                    prisonerPatrol.ReturnToCell();
+                }
+            }
+
             if (interactionPrompt != null)
-                interactionPrompt.text = isOpen ? "[P] Cerrar puerta" : "[P] Abrir puerta";
+                interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
         }
 
-        if (isOpen)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-
-            // Si la puerta se abre, hacemos que el prisionero salga de la celda
-            if (!prisonerPatrol.isOutsideCell)
-            {
-                prisonerPatrol.ExitCell();
-            }
-        }
-        else
-        {
-            transform.position = Vector3.MoveTowards(transform.position, initialPosition, speed * Time.deltaTime);
-
-            // Si la puerta se cierra y el prisionero está fuera de la celda, lo hacemos regresar
-            if (prisonerPatrol.isOutsideCell)
-            {
-                prisonerPatrol.ReturnToCell();
-            }
-        }
+        // Movimiento físico de la puerta
+        Vector3 target = isOpen ? targetPosition : initialPosition;
+        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
     }
 
     void OnTriggerStay(Collider other)
@@ -66,7 +61,7 @@ public class Puerta : MonoBehaviour
 
             if (interactionPrompt != null && !interactionPrompt.gameObject.activeSelf)
             {
-                interactionPrompt.text = isOpen ? "[P] Cerrar puerta" : "[P] Abrir puerta";
+                interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
                 interactionPrompt.gameObject.SetActive(true);
             }
         }
@@ -79,9 +74,7 @@ public class Puerta : MonoBehaviour
             puedeAbrir = false;
 
             if (interactionPrompt != null)
-            {
                 interactionPrompt.gameObject.SetActive(false);
-            }
         }
     }
 }

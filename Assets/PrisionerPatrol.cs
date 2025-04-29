@@ -8,29 +8,27 @@ public class PrisonerPatrol : MonoBehaviour
     public float speed = 2f;
     private int currentWaypointIndex = 0;
     public bool isBeingInspected = false;
-    public bool isOutsideCell = false; // Variable para saber si el prisionero está fuera de su celda
-    public Transform cellEntrance; // Referencia al lugar donde el prisionero debe quedarse cuando sale de la celda
-    private Vector3 initialPosition; // Posición inicial dentro de la celda
+    private bool isOutsideCell = false; // Ahora esta es privada
+    public Transform cellEntrance;
+    private Vector3 initialPosition;
+
+    public Transform inspectionPoint; // Punto donde se inspeccionará al prisionero
 
     void Start()
     {
-        // Guardamos la posición inicial (de la celda) para que el prisionero vuelva a su celda después de ser inspeccionado
         initialPosition = transform.position;
     }
 
     void Update()
     {
-        // Si está siendo inspeccionado o no hay waypoints, no se mueve
-        if (isBeingInspected || waypoints.Length == 0) return;
+        if (isBeingInspected || waypoints == null || waypoints.Length == 0) return;
 
-        // Si está fuera de la celda, el prisionero se queda quieto en la entrada esperando ser inspeccionado
         if (isOutsideCell)
         {
             transform.position = Vector3.MoveTowards(transform.position, cellEntrance.position, speed * Time.deltaTime);
-            return; // El prisionero no se moverá a los waypoints hasta que termine la inspección
+            return;
         }
 
-        // Si no está fuera de la celda, sigue patrullando normalmente
         Transform target = waypoints[currentWaypointIndex];
         transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
 
@@ -40,16 +38,34 @@ public class PrisonerPatrol : MonoBehaviour
         }
     }
 
-    // Método para hacer que el prisionero salga de la celda
     public void ExitCell()
     {
         isOutsideCell = true;
     }
 
-    // Método para hacer que el prisionero vuelva a su celda después de la inspección
     public void ReturnToCell()
     {
         isOutsideCell = false;
-        transform.position = initialPosition; // Regresa a la posición inicial de la celda
+        transform.position = initialPosition;
+    }
+
+    // Propiedad pública para acceder a isOutsideCell
+    public bool IsOutsideCell
+    {
+        get { return isOutsideCell; }
+        set { isOutsideCell = value; }
+    }
+
+    //  NUEVO MÉTODO PARA ASIGNAR WAYPOINTS DESDE EL MANAGER
+    public void SetWaypoints(Transform[] newWaypoints)
+    {
+        waypoints = newWaypoints;
+        currentWaypointIndex = 0;
+    }
+
+    // Método para establecer el punto de inspección
+    public void SetInspectionPoint(Transform newInspectionPoint)
+    {
+        inspectionPoint = newInspectionPoint;
     }
 }
