@@ -13,7 +13,6 @@ public class Puerta : MonoBehaviour
     public bool puedeAbrir;
 
     public TextMeshProUGUI interactionPrompt;
-
     public PrisonerPatrol prisonerPatrol;
 
     void Start()
@@ -31,14 +30,13 @@ public class Puerta : MonoBehaviour
         {
             isOpen = !isOpen;
 
-            // Mover prisionero una sola vez al cambiar el estado
             if (prisonerPatrol != null)
             {
-                if (isOpen && !prisonerPatrol.IsOutsideCell)  // Utilizando la propiedad IsOutsideCell
+                if (isOpen && !prisonerPatrol.IsOutsideCell)
                 {
                     prisonerPatrol.ExitCell();
                 }
-                else if (!isOpen && prisonerPatrol.IsOutsideCell)  // Utilizando la propiedad IsOutsideCell
+                else if (!isOpen && prisonerPatrol.IsOutsideCell)
                 {
                     prisonerPatrol.ReturnToCell();
                 }
@@ -48,7 +46,6 @@ public class Puerta : MonoBehaviour
                 interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
         }
 
-        // Movimiento físico de la puerta
         Vector3 target = isOpen ? targetPosition : initialPosition;
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
     }
@@ -58,7 +55,6 @@ public class Puerta : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             puedeAbrir = true;
-
             if (interactionPrompt != null && !interactionPrompt.gameObject.activeSelf)
             {
                 interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
@@ -72,7 +68,6 @@ public class Puerta : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             puedeAbrir = false;
-
             if (interactionPrompt != null)
                 interactionPrompt.gameObject.SetActive(false);
         }

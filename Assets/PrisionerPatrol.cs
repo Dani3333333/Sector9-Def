@@ -7,65 +7,80 @@ public class PrisonerPatrol : MonoBehaviour
     public Transform[] waypoints;
     public float speed = 2f;
     private int currentWaypointIndex = 0;
-    public bool isBeingInspected = false;
-    private bool isOutsideCell = false; // Ahora esta es privada
+
     public Transform cellEntrance;
-    private Vector3 initialPosition;
+    public Transform inspectionPoint;
 
-    public Transform inspectionPoint; // Punto donde se inspeccionará al prisionero
+    private bool isOutsideCell = false;
+    private bool isWalkingToInspection = false;
+    private bool isWalkingBack = false;
 
-    void Start()
-    {
-        initialPosition = transform.position;
-    }
+    public bool IsOutsideCell => isOutsideCell;
+    public bool isBeingInspected = false;
 
     void Update()
     {
-        if (isBeingInspected || waypoints == null || waypoints.Length == 0) return;
-
-        if (isOutsideCell)
+        if (isWalkingToInspection && inspectionPoint != null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, cellEntrance.position, speed * Time.deltaTime);
-            return;
+            MoveTo(inspectionPoint.position, () =>
+            {
+                isWalkingToInspection = false;
+                isOutsideCell = true;
+            });
         }
+        else if (isWalkingBack && cellEntrance != null)
+        {
+            MoveTo(cellEntrance.position, () =>
+            {
+                isWalkingBack = false;
+                isOutsideCell = false;
+                currentWaypointIndex = 0;
+            });
+        }
+        else if (!isOutsideCell && !isWalkingToInspection && !isWalkingBack && waypoints.Length > 0)
+        {
+            Patrol();
+        }
+    }
 
+    void Patrol()
+    {
         Transform target = waypoints[currentWaypointIndex];
-        transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, target.position) < 0.1f)
+        MoveTo(target.position, () =>
         {
             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+        });
+    }
+
+    void MoveTo(Vector3 destination, System.Action onArrival)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+        if (Vector3.Distance(transform.position, destination) < 0.1f)
+        {
+            onArrival?.Invoke();
         }
     }
 
     public void ExitCell()
     {
-        isOutsideCell = true;
+        isWalkingToInspection = true;
+        isWalkingBack = false;
     }
 
     public void ReturnToCell()
     {
-        isOutsideCell = false;
-        transform.position = initialPosition;
+        isWalkingBack = true;
+        isWalkingToInspection = false;
     }
 
-    // Propiedad pública para acceder a isOutsideCell
-    public bool IsOutsideCell
-    {
-        get { return isOutsideCell; }
-        set { isOutsideCell = value; }
-    }
-
-    //  NUEVO MÉTODO PARA ASIGNAR WAYPOINTS DESDE EL MANAGER
     public void SetWaypoints(Transform[] newWaypoints)
     {
         waypoints = newWaypoints;
         currentWaypointIndex = 0;
     }
 
-    // Método para establecer el punto de inspección
-    public void SetInspectionPoint(Transform newInspectionPoint)
+    public void SetInspectionPoint(Transform point)
     {
-        inspectionPoint = newInspectionPoint;
+        inspectionPoint = point;
     }
 }
