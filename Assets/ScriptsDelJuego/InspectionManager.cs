@@ -58,7 +58,7 @@ public class InspectionManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) && nearPrisoner && !isInspecting)
+        if (Input.GetKeyDown(KeyCode.E) && nearPrisoner)
         {
             OpenExtremityPanel();
             if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false);

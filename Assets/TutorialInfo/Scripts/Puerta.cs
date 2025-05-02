@@ -15,6 +15,9 @@ public class Puerta : MonoBehaviour
     public TextMeshProUGUI interactionPrompt;
     public PrisonerPatrol prisonerPatrol;
 
+    [Header("Día a partir del cual se puede abrir esta puerta (0 = siempre abierta)")]
+    public int diaDisponible = 0;
+
     void Start()
     {
         initialPosition = transform.position;
@@ -28,26 +31,27 @@ public class Puerta : MonoBehaviour
     {
         if (puedeAbrir && Input.GetKeyDown(KeyCode.Q))
         {
-            isOpen = !isOpen;
-
-            if (prisonerPatrol != null)
+            if (GameManager.Instance.currentDay >= diaDisponible)
             {
-                if (isOpen && !prisonerPatrol.IsOutsideCell)
+                isOpen = !isOpen;
+
+                if (prisonerPatrol != null)
                 {
-                    prisonerPatrol.ExitCell();
+                    if (isOpen && !prisonerPatrol.IsOutsideCell)
+                        prisonerPatrol.ExitCell();
+                    else if (!isOpen && prisonerPatrol.IsOutsideCell)
+                        prisonerPatrol.ReturnToCell();
                 }
-                else if (!isOpen && prisonerPatrol.IsOutsideCell)
-                {
-                    prisonerPatrol.ReturnToCell();
-                }
+
+                if (interactionPrompt != null)
+                    interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
             }
-
-            if (interactionPrompt != null)
+            else
             {
-                interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
+                if (interactionPrompt != null)
+                    interactionPrompt.text = "Puerta bloqueada";
             }
         }
-
 
         Vector3 target = isOpen ? targetPosition : initialPosition;
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
@@ -58,9 +62,14 @@ public class Puerta : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             puedeAbrir = true;
+
             if (interactionPrompt != null && !interactionPrompt.gameObject.activeSelf)
             {
-                interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
+                if (GameManager.Instance.currentDay >= diaDisponible)
+                    interactionPrompt.text = isOpen ? "[Q] Cerrar puerta" : "[Q] Abrir puerta";
+                else
+                    interactionPrompt.text = "Puerta bloqueada";
+
                 interactionPrompt.gameObject.SetActive(true);
             }
         }
@@ -71,6 +80,7 @@ public class Puerta : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             puedeAbrir = false;
+
             if (interactionPrompt != null)
                 interactionPrompt.gameObject.SetActive(false);
         }

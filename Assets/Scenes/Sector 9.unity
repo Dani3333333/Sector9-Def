@@ -1831,6 +1831,7 @@ MonoBehaviour:
   puedeAbrir: 0
   interactionPrompt: {fileID: 1643206127}
   prisonerPatrol: {fileID: 572776736}
+  diaDisponible: 1
 --- !u!65 &93988372
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2062,6 +2063,7 @@ GameObject:
   - component: {fileID: 125572884}
   - component: {fileID: 125572886}
   - component: {fileID: 125572885}
+  - component: {fileID: 125572887}
   m_Layer: 0
   m_Name: Luz_Celda1
   m_TagString: Untagged
@@ -2169,6 +2171,19 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &125572887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125572883}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722627a744c46d74d850ad9b31163995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diaActivacion: 0
 --- !u!1 &132638990
 GameObject:
   m_ObjectHideFlags: 0
@@ -3603,6 +3618,7 @@ MonoBehaviour:
   puedeAbrir: 0
   interactionPrompt: {fileID: 1643206127}
   prisonerPatrol: {fileID: 0}
+  diaDisponible: 0
 --- !u!65 &193328646
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8204,6 +8220,7 @@ MonoBehaviour:
   puedeAbrir: 0
   interactionPrompt: {fileID: 1643206127}
   prisonerPatrol: {fileID: 0}
+  diaDisponible: 0
 --- !u!65 &515057692
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8535,9 +8552,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 1913646125}
-  prisonerEntryPrefab: {fileID: 0}
-  container: {fileID: 1913646125}
   moveSpeed: 800
+  prisoner1Text: {fileID: 0}
+  prisoner2Text: {fileID: 0}
+  prisoner3Text: {fileID: 0}
+  prisoner4Text: {fileID: 0}
+  prisoner1: {fileID: 0}
+  prisoner2: {fileID: 0}
+  prisoner3: {fileID: 0}
+  prisoner4: {fileID: 0}
 --- !u!4 &544665799
 Transform:
   m_ObjectHideFlags: 0
@@ -12721,6 +12744,7 @@ MonoBehaviour:
   puedeAbrir: 0
   interactionPrompt: {fileID: 1643206127}
   prisonerPatrol: {fileID: 856038249}
+  diaDisponible: 0
 --- !u!65 &861800510
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15253,6 +15277,7 @@ GameObject:
   - component: {fileID: 1049700501}
   - component: {fileID: 1049700503}
   - component: {fileID: 1049700502}
+  - component: {fileID: 1049700504}
   m_Layer: 0
   m_Name: Luz_Celda4
   m_TagString: Untagged
@@ -15305,7 +15330,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1049700500}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
@@ -15360,6 +15385,19 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &1049700504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1049700500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722627a744c46d74d850ad9b31163995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diaActivacion: 3
 --- !u!1 &1053535875
 GameObject:
   m_ObjectHideFlags: 0
@@ -17478,6 +17516,7 @@ MonoBehaviour:
   puedeAbrir: 0
   interactionPrompt: {fileID: 1643206127}
   prisonerPatrol: {fileID: 0}
+  diaDisponible: 0
 --- !u!65 &1170306134
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -24670,6 +24709,7 @@ MonoBehaviour:
   puedeAbrir: 0
   interactionPrompt: {fileID: 1643206127}
   prisonerPatrol: {fileID: 838378501}
+  diaDisponible: 2
 --- !u!65 &1517435664
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26049,6 +26089,7 @@ GameObject:
   - component: {fileID: 1603492013}
   - component: {fileID: 1603492015}
   - component: {fileID: 1603492014}
+  - component: {fileID: 1603492016}
   m_Layer: 0
   m_Name: Luz_Celda2
   m_TagString: Untagged
@@ -26101,7 +26142,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1603492012}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
@@ -26156,6 +26197,19 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &1603492016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603492012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722627a744c46d74d850ad9b31163995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diaActivacion: 1
 --- !u!1 &1610677437
 GameObject:
   m_ObjectHideFlags: 0
@@ -29640,6 +29694,7 @@ GameObject:
   - component: {fileID: 1826972562}
   - component: {fileID: 1826972564}
   - component: {fileID: 1826972563}
+  - component: {fileID: 1826972565}
   m_Layer: 0
   m_Name: Luz_Celda3
   m_TagString: Untagged
@@ -29692,7 +29747,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1826972561}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
@@ -29747,6 +29802,19 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &1826972565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1826972561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 722627a744c46d74d850ad9b31163995, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  diaActivacion: 2
 --- !u!1 &1848525501
 GameObject:
   m_ObjectHideFlags: 0
@@ -34479,6 +34547,7 @@ MonoBehaviour:
   puedeAbrir: 0
   interactionPrompt: {fileID: 1643206127}
   prisonerPatrol: {fileID: 1145251673}
+  diaDisponible: 3
 --- !u!65 &2145264146
 BoxCollider:
   m_ObjectHideFlags: 0

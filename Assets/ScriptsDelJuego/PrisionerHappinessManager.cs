@@ -1,20 +1,19 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class PrisonerHappinessPanel : MonoBehaviour
 {
     public RectTransform panel;
-    public GameObject prisonerEntryPrefab;
-    public Transform container;
     public float moveSpeed = 1000f;
+
+    public Prisionero prisoner1;
+    public Prisionero prisoner2;
+    public Prisionero prisoner3;
+    public Prisionero prisoner4;
 
     private Vector2 hiddenPos;
     private Vector2 visiblePos;
     private bool isVisible = false;
-
-    private List<PrisonerEntryUI> prisonerEntries = new List<PrisonerEntryUI>();
 
     void Start()
     {
@@ -39,18 +38,14 @@ public class PrisonerHappinessPanel : MonoBehaviour
             if (isVisible)
             {
                 panel.gameObject.SetActive(true);
-                PopulatePrisonerEntries();
+                UpdateTexts();
             }
         }
 
         if (isVisible)
         {
             panel.anchoredPosition = Vector2.MoveTowards(panel.anchoredPosition, visiblePos, moveSpeed * Time.deltaTime);
-
-            foreach (var entry in prisonerEntries)
-            {
-                entry.UpdateUI();
-            }
+            UpdateTexts();
         }
         else
         {
@@ -62,34 +57,18 @@ public class PrisonerHappinessPanel : MonoBehaviour
         }
     }
 
-    void PopulatePrisonerEntries()
+    void UpdateTexts()
     {
-        foreach (Transform child in container)
-        {
-            Destroy(child.gameObject);
-        }
+        if (prisoner1 != null && prisoner1.textoFelicidad != null)
+            prisoner1.textoFelicidad.text = $"{prisoner1.felicidad:F0}%";
 
-        prisonerEntries.Clear();
+        if (prisoner2 != null && prisoner2.textoFelicidad != null)
+            prisoner2.textoFelicidad.text = $"{prisoner2.felicidad:F0}%";
 
-        GameObject[] prisoners = GameObject.FindGameObjectsWithTag("Prisionero");
+        if (prisoner3 != null && prisoner3.textoFelicidad != null)
+            prisoner3.textoFelicidad.text = $"{prisoner3.felicidad:F0}%";
 
-        int count = 1;
-        foreach (GameObject prisonerGO in prisoners)
-        {
-            Prisionero prisoner = prisonerGO.GetComponent<Prisionero>();
-            if (prisoner != null)
-            {
-                GameObject entryGO = Instantiate(prisonerEntryPrefab, container);
-                PrisonerEntryUI entryUI = entryGO.GetComponent<PrisonerEntryUI>();
-
-                if (entryUI != null)
-                {
-                    entryUI.Setup(prisoner, count);
-                    prisonerEntries.Add(entryUI);
-                }
-
-                count++;
-            }
-        }
+        if (prisoner4 != null && prisoner4.textoFelicidad != null)
+            prisoner4.textoFelicidad.text = $"{prisoner4.felicidad:F0}%";
     }
 }
