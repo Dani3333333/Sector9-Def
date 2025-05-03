@@ -17,8 +17,8 @@ public class SliderController : MonoBehaviour
 
     public float animationSpeed = 5f;
 
-    private float targetHappiness = 100f;  // Valor que queremos alcanzar
-    private float currentHappiness = 100f; // Valor actual mostrado
+    public float targetHappiness = 100f;  // Valor que queremos alcanzar
+    public float currentHappiness = 100f; // Valor actual mostrado
 
     void Update()
     {

@@ -1,15 +1,27 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class PrisonerHappinessPanel : MonoBehaviour
 {
-    public RectTransform panel;
-    public float moveSpeed = 1000f;
+    public RectTransform panel; // El panel que se mueve
 
-    public Prisionero prisoner1;
-    public Prisionero prisoner2;
-    public Prisionero prisoner3;
-    public Prisionero prisoner4;
+    public TextMeshProUGUI prisoner1Name;
+    public TextMeshProUGUI prisoner2Name;
+    public TextMeshProUGUI prisoner3Name;
+    public TextMeshProUGUI prisoner4Name;
+
+    public TextMeshProUGUI prisoner1Happiness;
+    public TextMeshProUGUI prisoner2Happiness;
+    public TextMeshProUGUI prisoner3Happiness;
+    public TextMeshProUGUI prisoner4Happiness;
+
+    public SliderController prisoner1;
+    public SliderController prisoner2;
+    public SliderController prisoner3;
+    public SliderController prisoner4;
+
+    public float moveSpeed = 1000f;
 
     private Vector2 hiddenPos;
     private Vector2 visiblePos;
@@ -51,24 +63,20 @@ public class PrisonerHappinessPanel : MonoBehaviour
         {
             panel.anchoredPosition = Vector2.MoveTowards(panel.anchoredPosition, hiddenPos, moveSpeed * Time.deltaTime);
             if (panel.anchoredPosition == hiddenPos)
-            {
                 panel.gameObject.SetActive(false);
-            }
         }
     }
 
     void UpdateTexts()
     {
-        if (prisoner1 != null && prisoner1.textoFelicidad != null)
-            prisoner1.textoFelicidad.text = $"{prisoner1.felicidad:F0}%";
+        prisoner1Name.text = "Prisoner 1";
+        prisoner2Name.text = "Prisoner 2";
+        prisoner3Name.text = "Prisoner 3";
+        prisoner4Name.text = "Prisoner 4";
 
-        if (prisoner2 != null && prisoner2.textoFelicidad != null)
-            prisoner2.textoFelicidad.text = $"{prisoner2.felicidad:F0}%";
-
-        if (prisoner3 != null && prisoner3.textoFelicidad != null)
-            prisoner3.textoFelicidad.text = $"{prisoner3.felicidad:F0}%";
-
-        if (prisoner4 != null && prisoner4.textoFelicidad != null)
-            prisoner4.textoFelicidad.text = $"{prisoner4.felicidad:F0}%";
+        prisoner1Happiness.text = $"{prisoner1.GetCurrentHappiness():F0}%";
+        prisoner2Happiness.text = $"{prisoner2.GetCurrentHappiness():F0}%";
+        prisoner3Happiness.text = $"{prisoner3.GetCurrentHappiness():F0}%";
+        prisoner4Happiness.text = $"{prisoner4.GetCurrentHappiness():F0}%";
     }
 }

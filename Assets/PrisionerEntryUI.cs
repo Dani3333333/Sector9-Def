@@ -7,20 +7,21 @@ public class PrisonerEntryUI : MonoBehaviour
     public TextMeshProUGUI nameText;
     public Slider happinessSlider;
 
-    private Prisionero targetPrisoner;
+    private SliderController sliderController;
 
-    public void Setup(Prisionero prisoner, int index)
+    public void Setup(SliderController controller, int index)
     {
-        targetPrisoner = prisoner;
-        nameText.text = string.IsNullOrEmpty(prisoner.nombre) ? $"Prisionero {index}" : prisoner.nombre;
+        sliderController = controller;
+        nameText.text = $"Prisionero {index}";
         UpdateUI();
     }
 
     public void UpdateUI()
     {
-        if (targetPrisoner != null)
+        if (sliderController != null)
         {
-            happinessSlider.value = Mathf.Clamp01(targetPrisoner.felicidad / 100f);
+            float happiness = sliderController.GetCurrentHappiness();
+            happinessSlider.value = Mathf.Clamp01(happiness / 100f);
         }
     }
 }
