@@ -23,6 +23,13 @@ public class MerchantInteractionManager : MonoBehaviour
 
     private bool nearVendedor = false;
     private List<Preso> prisioneros = new List<Preso>();
+
+    public SliderController prisoner1;
+    public SliderController prisoner2;
+    public SliderController prisoner3;
+    public SliderController prisoner4;
+
+
     private int selectedIndex = 0;
     private CanvasGroup panelFinalCanvasGroup; // << Añadido para fade
 
@@ -96,6 +103,11 @@ public class MerchantInteractionManager : MonoBehaviour
                     SellPrisionero(selectedIndex);
                 }
             }
+
+            if (panelFinal.activeSelf && Input.GetKeyDown(KeyCode.Return))
+            {
+                SalirDelJuego();
+            }
         }
         else
         {
@@ -106,6 +118,7 @@ public class MerchantInteractionManager : MonoBehaviour
                 interactPrompt.SetActive(false);
         }
     }
+
 
     void OpenDialogo()
     {
@@ -125,6 +138,20 @@ public class MerchantInteractionManager : MonoBehaviour
         foreach (Transform child in prisionerosContainer)
             Destroy(child.gameObject);
 
+        prisioneros.Clear();
+
+        // Solo añade los prisioneros que existen según el día
+        int day = GameManager.Instance.currentDay;
+
+        if (day >= 0)
+            prisioneros.Add(new Preso("Prisoner 1", (int)prisoner1.GetCurrentHappiness()));
+        if (day >= 1)
+            prisioneros.Add(new Preso("Prisoner 2", (int)prisoner2.GetCurrentHappiness()));
+        if (day >= 2)
+            prisioneros.Add(new Preso("Prisoner 3", (int)prisoner3.GetCurrentHappiness()));
+        if (day >= 3)
+            prisioneros.Add(new Preso("Prisoner 4", (int)prisoner4.GetCurrentHappiness()));
+
         for (int i = 0; i < prisioneros.Count; i++)
         {
             GameObject btnObj = Instantiate(prisioneroButtonPrefab, prisionerosContainer);
@@ -133,12 +160,12 @@ public class MerchantInteractionManager : MonoBehaviour
             int happiness = prisioneros[i].happiness;
             int precio = happiness * 10;
 
-            // Poner cada dato en una línea separada para que sea más legible
             btnText.text = $"{prisioneros[i].name}\tFelicidad: {happiness}%\t|\tPrecio: ${precio}";
         }
 
         HighlightButton(0);
     }
+
 
     void HighlightButton(int index)
     {

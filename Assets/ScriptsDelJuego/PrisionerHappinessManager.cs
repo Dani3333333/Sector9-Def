@@ -69,14 +69,38 @@ public class PrisonerHappinessPanel : MonoBehaviour
 
     void UpdateTexts()
     {
-        prisoner1Name.text = "Prisoner 1";
-        prisoner2Name.text = "Prisoner 2";
-        prisoner3Name.text = "Prisoner 3";
-        prisoner4Name.text = "Prisoner 4";
+        int day = GameManager.Instance.currentDay;
 
-        prisoner1Happiness.text = $"{prisoner1.GetCurrentHappiness():F0}%";
-        prisoner2Happiness.text = $"{prisoner2.GetCurrentHappiness():F0}%";
-        prisoner3Happiness.text = $"{prisoner3.GetCurrentHappiness():F0}%";
-        prisoner4Happiness.text = $"{prisoner4.GetCurrentHappiness():F0}%";
+        prisoner1Name.gameObject.SetActive(day >= 0);
+        prisoner1Happiness.gameObject.SetActive(day >= 0);
+        if (day >= 0)
+        {
+            prisoner1Name.text = "Prisoner 1";
+            prisoner1Happiness.text = $"{prisoner1.GetCurrentHappiness():F0}%";
+        }
+
+        prisoner2Name.gameObject.SetActive(day >= 1);
+        prisoner2Happiness.gameObject.SetActive(day >= 1);
+        if (day >= 1)
+        {
+            prisoner2Name.text = "Prisoner 2";
+            prisoner2Happiness.text = $"{prisoner2.GetCurrentHappiness():F0}%";
+        }
+
+        prisoner3Name.gameObject.SetActive(day >= 2);
+        prisoner3Happiness.gameObject.SetActive(day >= 2);
+        if (day >= 2)
+        {
+            prisoner3Name.text = "Prisoner 3";
+            prisoner3Happiness.text = $"{prisoner3.GetCurrentHappiness():F0}%";
+        }
+
+        prisoner4Name.gameObject.SetActive(day >= 3);
+        prisoner4Happiness.gameObject.SetActive(day >= 3);
+        if (day >= 3)
+        {
+            prisoner4Name.text = "Prisoner 4";
+            prisoner4Happiness.text = $"{prisoner4.GetCurrentHappiness():F0}%";
+        }
     }
 }
