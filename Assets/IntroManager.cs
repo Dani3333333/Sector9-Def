@@ -7,7 +7,6 @@ public class IntroManager : MonoBehaviour
 {
     public GameObject introPanel;
     public TextMeshProUGUI introText;
-    public GameClock gameClock;
     public float typeSpeed = 0.04f;
 
     private string fullIntroText =
@@ -33,7 +32,6 @@ Su valor crecerá… o se desmoronará contigo.
     void Start()
     {
         introPanel.SetActive(true);
-        gameClock.enabled = false;
         StartCoroutine(TypeText());
     }
 
@@ -42,7 +40,6 @@ Su valor crecerá… o se desmoronará contigo.
         if (finishedTyping && Input.GetKeyDown(KeyCode.Return))
         {
             introPanel.SetActive(false);
-            gameClock.enabled = true;
             enabled = false;
         }
     }

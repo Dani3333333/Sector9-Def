@@ -7,9 +7,11 @@ public class GameClock : MonoBehaviour
 {
     public TextMeshProUGUI clockText;
     public TextMeshProUGUI sleepWarningText;
-    public TextMeshProUGUI feedingWarningText; // NUEVO: texto para advertencia de comida
+    public TextMeshProUGUI feedingWarningText;
 
-    public float secondsPerGameDay = 600f; // 10 minutos reales = 1 día en juego
+    public GameObject introPanel; // NUEVO: referencia al panel de introducción
+
+    public float secondsPerGameDay = 600f;
     private float gameMinutesPerRealSecond;
 
     private int hour = 6;
@@ -20,6 +22,7 @@ public class GameClock : MonoBehaviour
     private bool clockStopped = false;
     private bool hasFedPrisoners = false;
     private bool warningShown = false;
+    private bool clockStarted = false;
 
     void Start()
     {
@@ -34,7 +37,13 @@ public class GameClock : MonoBehaviour
 
     void Update()
     {
-        if (clockStopped) return;
+        // Espera a que se cierre el panel de introducción
+        if (!clockStarted && introPanel != null && !introPanel.activeSelf)
+        {
+            clockStarted = true;
+        }
+
+        if (clockStopped || !clockStarted) return;
 
         timer += Time.deltaTime * gameMinutesPerRealSecond;
 
@@ -53,26 +62,20 @@ public class GameClock : MonoBehaviour
                     hour = hour % 24;
             }
 
-            // Mostrar advertencia de comida de 14:00 a 15:00
-            if (hour == 14)
+            if (hour == 14 && !warningShown)
             {
-                if (!warningShown)
+                warningShown = true;
+                if (clockText != null)
+                    clockText.color = Color.red;
+
+                if (feedingWarningText != null)
                 {
-                    warningShown = true;
-
-                    if (clockText != null)
-                        clockText.color = Color.red;
-
-                    if (feedingWarningText != null)
-                    {
-                        feedingWarningText.text = "¡Hora de alimentar a los humanos, si no, morirán!";
-                        feedingWarningText.gameObject.SetActive(true);
-                    }
+                    feedingWarningText.text = "¡Hora de alimentar a los humanos, si no, morirán!";
+                    feedingWarningText.gameObject.SetActive(true);
                 }
             }
             else if (hour >= 15 && warningShown && !hasFedPrisoners)
             {
-                // Ocultamos el mensaje y restauramos color después de las 15:00
                 warningShown = false;
 
                 if (clockText != null)
@@ -82,7 +85,6 @@ public class GameClock : MonoBehaviour
                     feedingWarningText.gameObject.SetActive(false);
             }
 
-            // Fin del día
             if (hour >= 23)
             {
                 hour = 23;
@@ -105,7 +107,6 @@ public class GameClock : MonoBehaviour
         clockText.text = $"{hour:D2}:{minute:D2}";
     }
 
-
     public void ResetClock()
     {
         hour = 6;
@@ -114,6 +115,7 @@ public class GameClock : MonoBehaviour
         clockStopped = false;
         hasFedPrisoners = false;
         warningShown = false;
+        clockStarted = false;
 
         if (clockText != null)
             clockText.color = Color.white;
@@ -125,7 +127,6 @@ public class GameClock : MonoBehaviour
             feedingWarningText.gameObject.SetActive(false);
     }
 
-    // Llama esta función desde el sistema de alimentación cuando el jugador da de comer
     public void MarkPrisonersFed()
     {
         hasFedPrisoners = true;
@@ -139,16 +140,11 @@ public class GameClock : MonoBehaviour
 
     private void KillLeastHappyPrisoner()
     {
-        // Lógica que selecciona y elimina al prisionero con menor felicidad.
-        // Ejemplo: PrisonerManager.Instance.KillLeastHappy();
         Debug.Log("Un prisionero ha muerto por no recibir comida.");
     }
+
     public bool CanFeedPrisoners()
     {
         return hour >= 14;
     }
-
-
-
-
 }
