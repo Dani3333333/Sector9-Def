@@ -17,10 +17,10 @@ No solo evitarás que escapen… también deberás cuidar su bienestar.
 
 Su <b>felicidad</b> es tu mayor activo.
 
-Al tercer día, el comandante supremo vendrá a <b>evaluar</b> tus progresos.
+Al tercer día el rey de los traficantes vendrá a <b>evaluar tus progresos</b>.
 Y querrá comprar a alguno de ellos.
 
-<b>Cuídalos. Aliméntalos. Obsérvalos.</b>
+<b>Revísalos. Aliméntalos. Obsérvalos.</b>
 Su valor crecerá… o se desmoronará contigo.
 
 ¿Estás preparado?

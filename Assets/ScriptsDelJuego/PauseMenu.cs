@@ -6,75 +6,68 @@ using UnityEngine.UI;
 public class PauseMenu : MonoBehaviour
 {
     public GameObject pauseMenuPanel; // Panel de pausa
-    public Image backgroundImage;     // Imagen de fondo (espacio exterior)
+    public GameObject optionsMenuPanel; // Tu menú de opciones (asegurate de asignarlo en el Inspector)
     public Button resumeButton;       // Botón de reanudar
-    public Button restartButton;      // Botón de reiniciar
-    public Button loadCheckpointButton; // Botón de cargar punto de control
     public Button optionsButton;      // Botón de opciones
-    public Button quitButton;         // Botón de salir al menú principal
-    public Button playButton;         // Botón de jugar (debe ser asignado desde el menú principal)
+    public Button quitButton;         // Botón de salir del juego
 
-    private bool isPaused = false;    // Estado del juego
-    private bool gameStarted = false; // Estado de si el juego ha comenzado
-
-    public float animationSpeed = 1f; // Velocidad de animación de la puerta
+    private bool isPaused = false;
+    private bool gameStarted = false;
 
     void Start()
     {
-        // Asegurarse de que el botón "Jugar" tenga la función correcta
-        playButton.onClick.AddListener(StartGame);
+        // Asignar funciones a botones
+        resumeButton.onClick.AddListener(ClosePauseMenu);
+        optionsButton.onClick.AddListener(OpenOptionsMenu);
+        quitButton.onClick.AddListener(SalirDelJuego);
+
+        // Asegurarse de que el menú de pausa y opciones estén desactivados al inicio
+        pauseMenuPanel.SetActive(false);
+        optionsMenuPanel.SetActive(false);
     }
 
     void Update()
     {
-        // Si el juego ya ha comenzado, permitir abrir el menú con ESC
         if (gameStarted && Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isPaused)
-            {
-                ClosePauseMenu();  // Cerrar el menú de pausa
-            }
-            else
-            {
-                OpenPauseMenu();   // Abrir el menú de pausa
-            }
+            OpenPauseMenu();
         }
     }
 
-    void StartGame()
+    public void StartGame()
     {
-        // Marcar que el juego ha comenzado y deshabilitar el menú de pausa temporalmente
         gameStarted = true;
-        Debug.Log("Juego iniciado!");
     }
 
     void OpenPauseMenu()
     {
         isPaused = true;
         pauseMenuPanel.SetActive(true);
-
-        // Bloquear el ratón
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        // Hacer que los botones respondan
-        resumeButton.onClick.AddListener(ClosePauseMenu);
-        quitButton.onClick.AddListener(QuitToMainMenu);
     }
 
     void ClosePauseMenu()
     {
         isPaused = false;
         pauseMenuPanel.SetActive(false);
-
-        // Bloquear el ratón de nuevo al reanudar
+        optionsMenuPanel.SetActive(false); // por si estaba abierto
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void QuitToMainMenu()
+    void OpenOptionsMenu()
     {
-        // Aquí iría la funcionalidad de salir al menú principal (que aún no hemos hecho)
-        Debug.Log("Salir al menú principal...");
+        optionsMenuPanel.SetActive(true);
+        pauseMenuPanel.SetActive(false);
+    }
+
+    void SalirDelJuego()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }
