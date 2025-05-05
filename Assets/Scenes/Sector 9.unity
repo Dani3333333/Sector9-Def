@@ -4589,7 +4589,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -280.7}
+  m_AnchoredPosition: {x: 100, y: -303.7}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &256453954
@@ -10281,7 +10281,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 862, y: -280.7}
+  m_AnchoredPosition: {x: 862, y: -303.7}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &619822041
@@ -11797,8 +11797,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Cuando hayas completado todas las tareas del d\xEDa, podr\xE1s ir a dormir
-    en la silla de mando.\nAl hacerlo, pasar\xE1s oficialmente al primer d\xEDa de
-    trabajo real.\nHaz que cada decisi\xF3n cuente.\n\n"
+    en la silla de mando.\n\nAl hacerlo, pasar\xE1s oficialmente al primer d\xEDa
+    de trabajo real.\n\nHaz que cada decisi\xF3n cuente.\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -13970,7 +13970,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1116, y: -280.7}
+  m_AnchoredPosition: {x: 1116, y: -303.7}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &875161795
@@ -17137,7 +17137,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1624, y: -280.7}
+  m_AnchoredPosition: {x: 1624, y: -303.7}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1078865611
@@ -18957,9 +18957,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Este sistema se activar\xE1 m\xE1s adelante. Ser\xE1 tu responsabilidad
-    alimentar a los prisioneros para mantener su salud y su estado de \xE1nimo en
-    buen nivel."
+  m_text: "A las 14:00 en punto, deber\xE1s dar de comer a tus prisioneros.\nAcercate
+    al dispensador de comida y presiona la [E], apareceran diferentes comidas.\n\nRecoje
+    la comida con la [E], y sueltalo con la [R] dentro de la celda\n\nCuidado, algunas
+    comidas bajan la felicidad, otras la suben"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -19022,7 +19023,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 20.32521, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -21863,8 +21864,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "A partir del tercer d\xEDa podr\xE1s interactuar con el mercenario de
-    la nave, un personaje sombr\xEDo con quien podr\xE1s negociar prisioneros.\nAc\xE9rcate
+  m_text: "A partir del tercer d\xEDa, podr\xE1s interactuar con el rey de los traficantes,
+    un personaje sombr\xEDo con quien podr\xE1s negociar prisioneros.\n\nAc\xE9rcate
     al panel de venta cuando est\xE9 disponible y decide qu\xE9 hacer..."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -21928,7 +21929,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 3.4367828, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -24488,10 +24489,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Tambi\xE9n puedes inspeccionar los objetos de la celda: cama, lavabo y
-    altar.\nMu\xE9vete entre ellos con las flechas del teclado y elimina objetos
-    peligrosos usando [H].\nSigue el mismo criterio que con las revisiones corporales:
-    act\xFAa con criterio."
+  m_text: "Tambi\xE9n puedes inspeccionar los objetos de la celda: cama, v\xE1ter
+    y lavamanos.\nMu\xE9vete entre los objetos  con las flechas del teclado y elimina
+    objetos peligrosos usando [H].\n\nSigue el mismo criterio que con las revisiones
+    corporales."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -24626,8 +24627,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Ac\xE9rcate a las puertas de las celdas: si est\xE1n desbloqueadas, podr\xE1s
-    abrirlas o cerrarlas con la tecla [Q]. Esto es esencial para poder entrar a interactuar
-    con los prisioneros.\n\n"
+    abrirlas o cerrarlas con la tecla [Q]. \n\nEsto es esencial para poder entrar
+    a interactuar con los prisioneros.\n\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -25448,7 +25449,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1370, y: -280.7}
+  m_AnchoredPosition: {x: 1370, y: -303.7}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1509589102
@@ -28743,7 +28744,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "En la esquina superior izquierda ver\xE1s un reloj: cada d\xEDa comienza
-    a las 6:00 y debes ir a dormir antes de las 23:00.\nPresiona P para abrir el
+    a las 6:00 y debes ir a dormir antes de las 23:00.\n\nPresiona P para abrir el
     panel de felicidad de los prisioneros, y L para ver la leyenda de controles,
     donde podr\xE1s consultar todas las teclas disponibles.\n\n"
   m_isRightToLeft: 0
@@ -28808,7 +28809,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 20.934624, y: 0, z: 0, w: 0}
+  m_margin: {x: 20.934624, y: 0, z: 3.867836, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -30725,7 +30726,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -10}
+  m_AnchoredPosition: {x: -3.4, y: -10}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1848545404
@@ -32568,7 +32569,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 354, y: -280.7}
+  m_AnchoredPosition: {x: 354, y: -303.7}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2002376290
@@ -33475,7 +33476,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 608, y: -280.7}
+  m_AnchoredPosition: {x: 608, y: -303.7}
   m_SizeDelta: {x: 200, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2068546123
@@ -35310,9 +35311,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Una vez dentro de la celda, pulsa [E] para iniciar la revisi\xF3n corporal.\nPodr\xE1s
+  m_text: "Una vez dentro de la celda, pulsa [E] para iniciar la revisi\xF3n corporal.\n\nPodr\xE1s
     inspeccionar brazos, torso y piernas para encontrar objetos ocultos.\nUsa la
-    tecla [H] para eliminar los objetos peligrosos.\nCuidado: si retiras objetos
+    tecla [H] para eliminar los objetos peligrosos.\n\nCuidado: si retiras objetos
     inofensivos, la felicidad del prisionero bajar\xE1.\nCada d\xEDa que pase, los
     prisioneros podr\xEDan tener nuevos objetos escondidos.\n\n"
   m_isRightToLeft: 0

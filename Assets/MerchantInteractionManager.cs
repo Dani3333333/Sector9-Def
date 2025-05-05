@@ -206,16 +206,8 @@ public class MerchantInteractionManager : MonoBehaviour
 
     IEnumerator FadeInPanelFinal()
     {
-        float duration = 1.0f; // 1 segundo de fade
-        float elapsed = 0f;
-        panelFinalCanvasGroup.alpha = 0;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            panelFinalCanvasGroup.alpha = Mathf.Clamp01(elapsed / duration);
-            yield return null;
-        }
+        panelFinalCanvasGroup.alpha = 1f;
+        yield return null;
     }
 
     void SalirDelJuego()
