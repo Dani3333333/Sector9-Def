@@ -36275,6 +36275,7 @@ GameObject:
   - component: {fileID: 8455224230908503222}
   - component: {fileID: 8455224230908503221}
   - component: {fileID: 8455224230908503220}
+  - component: {fileID: 8455224230908503224}
   m_Layer: 0
   m_Name: Prsionero1_Def
   m_TagString: Prisionero
@@ -36419,6 +36420,27 @@ MonoBehaviour:
   cellEntrance: {fileID: 2120731303}
   inspectionPoint: {fileID: 1065468216}
   isBeingInspected: 0
+--- !u!95 &8455224230908503224
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4845781537185260830}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: bd3aaf5808f61ef4abb20b4cb70afe19, type: 3}
+  m_Controller: {fileID: 9100000, guid: 740f4480fa835b9418c43cdb6ab8be57, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -18,14 +18,36 @@ public class PrisonerPatrol : MonoBehaviour
     public bool IsOutsideCell => isOutsideCell;
     public bool isBeingInspected = false;
 
+    private Animator animator; // <-- NUEVO
+    private Vector3 lastPosition; // <-- NUEVO
+
+    void Start()
+    {
+        animator = GetComponent<Animator>(); // <-- NUEVO
+        lastPosition = transform.position;   // <-- NUEVO
+    }
+
     void Update()
     {
+        Vector3 currentPosition = transform.position;
+        Vector3 movement = currentPosition - lastPosition;
+
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", movement.magnitude > 0.01f); // <-- CAMBIO DE ANIMACIÓN
+        }
+
+        lastPosition = currentPosition;
+
         if (isWalkingToInspection && inspectionPoint != null)
         {
             MoveTo(inspectionPoint.position, () =>
             {
                 isWalkingToInspection = false;
                 isOutsideCell = true;
+
+                // Girar 180º para mirar hacia la celda
+                transform.rotation = Quaternion.LookRotation(-inspectionPoint.forward); // <-- NUEVO
             });
         }
         else if (isWalkingBack && cellEntrance != null)
@@ -41,13 +63,7 @@ public class PrisonerPatrol : MonoBehaviour
         {
             Patrol();
         }
-        //  Esto evita que se mueva fuera de la celda una vez llega a inspección
-        else if (isOutsideCell && !isWalkingToInspection && !isWalkingBack)
-        {
-            // No hacer nada, esperar quieto
-        }
     }
-
 
     void Patrol()
     {
@@ -60,6 +76,14 @@ public class PrisonerPatrol : MonoBehaviour
 
     void MoveTo(Vector3 destination, System.Action onArrival)
     {
+        // ROTAR HACIA EL DESTINO
+        Vector3 direction = (destination - transform.position).normalized;
+        if (direction != Vector3.zero)
+        {
+            Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 5f); // <-- ROTACIÓN SUAVE
+        }
+
         transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
         if (Vector3.Distance(transform.position, destination) < 0.1f)
         {
@@ -90,3 +114,4 @@ public class PrisonerPatrol : MonoBehaviour
         inspectionPoint = point;
     }
 }
+
