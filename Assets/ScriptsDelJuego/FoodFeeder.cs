@@ -4,35 +4,28 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-
-
-
 public class FoodFeeder : MonoBehaviour
 {
-    public GameObject foodPanelUI; // El panel que aparece cuando el jugador entra
-    public GameObject[] foodObjects; // Los 4 objetos de comida
-    public GameClock gameClock; // Referencia al reloj del juego
+    public GameObject foodPanelUI;
+    public GameObject[] foodPrefabs; // NUEVO: Prefabs de comida
+    public Transform[] foodSpawnPoints; // NUEVO: Puntos donde instanciar la comida
+    public GameClock gameClock;
 
     private bool playerInRange = false;
     private bool foodSpawned = false;
+    private List<GameObject> spawnedFoodObjects = new List<GameObject>();
 
     private void Start()
     {
         if (foodPanelUI != null)
             foodPanelUI.SetActive(false);
-
-        // Al inicio, ocultamos las comidas
-        foreach (var food in foodObjects)
-        {
-            food.SetActive(false);
-        }
     }
 
     private void Update()
     {
         if (playerInRange && gameClock != null && gameClock.CanFeedPrisoners() && !foodSpawned)
         {
-            if (Input.GetKeyDown(KeyCode.E)) // Si el jugador pulsa "E"
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 SpawnFood();
             }
@@ -45,7 +38,6 @@ public class FoodFeeder : MonoBehaviour
         {
             playerInRange = true;
 
-            // Solo mostrar el panel si todavía no se ha dado comida
             if (foodPanelUI != null && !foodSpawned)
                 foodPanelUI.SetActive(true);
         }
@@ -64,15 +56,38 @@ public class FoodFeeder : MonoBehaviour
 
     private void SpawnFood()
     {
-        foreach (var food in foodObjects)
+        ClearOldFood();
+
+        for (int i = 0; i < foodPrefabs.Length && i < foodSpawnPoints.Length; i++)
         {
-            food.SetActive(true); // Aparecen los objetos
+            GameObject food = Instantiate(foodPrefabs[i], foodSpawnPoints[i].position, foodSpawnPoints[i].rotation);
+            spawnedFoodObjects.Add(food);
         }
 
         if (foodPanelUI != null)
-            foodPanelUI.SetActive(false); // Ocultamos el panel después
+            foodPanelUI.SetActive(false);
 
-        foodSpawned = true; // Ya hemos dado de comer, no queremos volver a mostrar el panel
+        foodSpawned = true;
+    }
+
+    public void ResetFoodSpawn()
+    {
+        ClearOldFood();
+        foodSpawned = false;
+
+        if (playerInRange && foodPanelUI != null)
+            foodPanelUI.SetActive(true);
+    }
+
+    private void ClearOldFood()
+    {
+        foreach (var obj in spawnedFoodObjects)
+        {
+            if (obj != null)
+                Destroy(obj);
+        }
+
+        spawnedFoodObjects.Clear();
     }
 }
 

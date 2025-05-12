@@ -24,10 +24,13 @@ public class SleepManager : MonoBehaviour
     public float dayTextDuration = 2.5f;
 
     [Header("Tareas Tutorial")]
-    public GameObject completeAllTasksText; // NUEVO: El texto que avisa que faltan tareas
+    public GameObject completeAllTasksText;
 
     [Header("Manager de inspección")]
-    public InspectionManager inspectionManager; // <- AÑADIDO
+    public InspectionManager inspectionManager;
+
+    [Header("FoodFeeder")]
+    public FoodFeeder foodFeeder; // NUEVO: Asignar en el inspector
 
     private bool canSleep = false;
     private bool isSleeping = false;
@@ -37,7 +40,7 @@ public class SleepManager : MonoBehaviour
     void Start()
     {
         if (completeAllTasksText != null)
-            completeAllTasksText.SetActive(false); // Asegurar que empieza apagado
+            completeAllTasksText.SetActive(false);
     }
 
     void Update()
@@ -67,7 +70,7 @@ public class SleepManager : MonoBehaviour
     {
         foreach (var task in TutorialTaskManager.Instance.tasks)
         {
-            if (!task.detailToggle.isOn) // Si algún toggle no está activado...
+            if (!task.detailToggle.isOn)
                 return false;
         }
         return true;
@@ -78,7 +81,7 @@ public class SleepManager : MonoBehaviour
         if (completeAllTasksText != null)
         {
             completeAllTasksText.SetActive(true);
-            yield return new WaitForSeconds(2f); // El mensaje dura 2 segundos
+            yield return new WaitForSeconds(2f);
             completeAllTasksText.SetActive(false);
         }
     }
@@ -116,14 +119,19 @@ public class SleepManager : MonoBehaviour
 
         GameManager.Instance.NextDay();
 
-        // CORREGIDO: Usar el método correcto del InspectionManager
-        if (inspectionManager != null)
+        // Reiniciar la comida al comenzar el nuevo día
+        if (foodFeeder != null)
         {
-            inspectionManager.ReplenishAllPrisonerItems();
+            foodFeeder.ResetFoodSpawn();
         }
         else
         {
-            Debug.LogWarning("InspectionManager no asignado en SleepManager!");
+            Debug.LogWarning("FoodFeeder no asignado en SleepManager!");
+        }
+
+        if (inspectionManager != null)
+        {
+            inspectionManager.ReplenishAllPrisonerItems();
         }
 
         yield return StartCoroutine(ShowDayTextAndFadeFromBlack("Día " + GameManager.Instance.currentDay));
@@ -208,3 +216,4 @@ public class SleepManager : MonoBehaviour
         }
     }
 }
+

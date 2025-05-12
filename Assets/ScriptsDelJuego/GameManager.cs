@@ -9,6 +9,10 @@ public class GameManager : MonoBehaviour
     public int currentDay = 0;
     public bool isTutorial = true;
 
+    // Evento que se lanza al comenzar un nuevo día
+    public delegate void NuevoDiaEvent();
+    public static event NuevoDiaEvent OnNuevoDia;
+
     void Awake()
     {
         if (Instance == null)
@@ -19,7 +23,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        // Inicializamos el juego. El tutorial es el día 0
         if (isTutorial)
         {
             currentDay = 0;
@@ -28,17 +31,16 @@ public class GameManager : MonoBehaviour
 
     public void EndTutorial()
     {
-        // Al finalizar el tutorial, se avanza al Día 1
         isTutorial = false;
         currentDay = 1;
     }
 
     public void NextDay()
     {
-        // Avanza al siguiente día, pero no pasa del Día 3
         if (currentDay < 3)
         {
             currentDay++;
+            OnNuevoDia?.Invoke(); //  Disparamos el evento de nuevo día
         }
         else
         {
@@ -46,10 +48,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Para verificar si ya se pasó al Día 3
     public bool CanSleep()
     {
-        // Solo se puede dormir si el día es menor a 3
         return currentDay < 3;
     }
 }
+
