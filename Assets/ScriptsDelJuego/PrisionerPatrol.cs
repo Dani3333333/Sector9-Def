@@ -18,8 +18,8 @@ public class PrisonerPatrol : MonoBehaviour
     public bool IsOutsideCell => isOutsideCell;
     public bool isBeingInspected = false;
 
-    private Animator animator; // <-- NUEVO
-    private Vector3 lastPosition; // <-- NUEVO
+    private Animator animator; 
+    private Vector3 lastPosition; 
 
     void Start()
     {
