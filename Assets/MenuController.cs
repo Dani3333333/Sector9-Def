@@ -5,35 +5,45 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    public Animator animator; // Animator que controla flotar y despegue
-    public Image fadePanel;
+    public Animator animator;       // Animator que controla flotar y despegue
+    public Image fadePanel;         // Imagen negra para el fade out
+    public float fadeDuration = 1f; // Duración del fade
+    public string sceneToLoad = "Sector 9"; // Nombre de la escena siguiente
 
     public void PlayGame()
     {
+        // Activa el trigger que inicia la animación de despegue
+        animator.SetTrigger("TakeOff");
         StartCoroutine(FadeAndStart());
     }
 
     IEnumerator FadeAndStart()
     {
-        // Lanza la animación de despegue
-        animator.SetTrigger("TakeOff");
-
-        // Espera que termine la animación (ajusta si es más larga)
+        // Espera el tiempo de despegue (ajusta según duración real del clip)
         yield return new WaitForSeconds(2f);
 
-        // Fade out
-        for (float i = 0; i <= 1; i += Time.deltaTime)
+        // Asegúrate de que el fadePanel está al frente
+        fadePanel.transform.SetAsLastSibling();
+
+        // Fade out gradual
+        for (float t = 0; t <= fadeDuration; t += Time.deltaTime)
         {
-            fadePanel.color = new Color(0, 0, 0, i);
+            float alpha = Mathf.Clamp01(t / fadeDuration);
+            fadePanel.color = new Color(0, 0, 0, alpha);
             yield return null;
         }
 
         // Carga la siguiente escena
-        SceneManager.LoadScene("Sector 9");
+        SceneManager.LoadScene(sceneToLoad);
     }
 
     public void ExitGame()
     {
+        Debug.Log("Saliendo del juego...");
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
         Application.Quit();
+#endif
     }
 }
