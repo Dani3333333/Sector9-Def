@@ -9,6 +9,7 @@ public class MenuController : MonoBehaviour
     public Image fadePanel;         // Imagen negra para el fade out
     public float fadeDuration = 1f; // Duración del fade
     public string sceneToLoad = "Sector 9"; // Nombre de la escena siguiente
+    public GameObject settingsPanel;  // Asigna en el inspector el panel de configuración
 
     public void PlayGame()
     {
@@ -35,6 +36,16 @@ public class MenuController : MonoBehaviour
 
         // Carga la siguiente escena
         SceneManager.LoadScene(sceneToLoad);
+    }
+
+    public void OpenSettings()
+    {
+        settingsPanel.SetActive(true);
+    }
+
+    public void CloseSettings()
+    {
+        settingsPanel.SetActive(false);
     }
 
     public void ExitGame()
