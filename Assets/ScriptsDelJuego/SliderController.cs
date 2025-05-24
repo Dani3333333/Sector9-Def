@@ -20,6 +20,9 @@ public class SliderController : MonoBehaviour
     public float targetHappiness = 100f;  // Valor que queremos alcanzar
     public float currentHappiness = 100f; // Valor actual mostrado
 
+    [HideInInspector]
+    public bool wasFedToday = false;
+
     void Update()
     {
         // Mantener siempre de cara a la cámara
@@ -86,5 +89,17 @@ public class SliderController : MonoBehaviour
     public float GetCurrentHappiness()
     {
         return slider.value;
+    }
+
+    // Método para comprobar si el preso ha sido alimentado y penalizar si no lo ha sido
+    public void CheckIfFedAndPenalize()
+    {
+        if (!wasFedToday)
+        {
+            DecreaseHappiness(15f); // Penalización por no recibir comida (ajustar el valor como prefieras)
+        }
+
+        // Resetear el flag para el nuevo día
+        wasFedToday = false;
     }
 }

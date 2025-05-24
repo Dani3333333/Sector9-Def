@@ -145,6 +145,6 @@ public class GameClock : MonoBehaviour
 
     public bool CanFeedPrisoners()
     {
-        return hour >= 14;
+        return hour >= 6;
     }
 }

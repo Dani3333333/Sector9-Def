@@ -29,13 +29,10 @@ public class SleepManager : MonoBehaviour
     [Header("Manager de inspección")]
     public InspectionManager inspectionManager;
 
-    [Header("FoodFeeder")]
-    public FoodFeeder foodFeeder; // NUEVO: Asignar en el inspector
+    public GameObject sleepText;
 
     private bool canSleep = false;
     private bool isSleeping = false;
-
-    public GameObject sleepText;
 
     void Start()
     {
@@ -116,22 +113,21 @@ public class SleepManager : MonoBehaviour
         videoPlayer.gameObject.SetActive(false);
 
         gameClock.ResetClock();
-
         GameManager.Instance.NextDay();
 
-        // Reiniciar la comida al comenzar el nuevo día
-        if (foodFeeder != null)
+        //  AÑADIDO: reiniciar el estado del FoodFeeder para permitir dar comida
+        foreach (var feeder in FindObjectsOfType<FoodFeeder>())
         {
-            foodFeeder.ResetFoodSpawn();
-        }
-        else
-        {
-            Debug.LogWarning("FoodFeeder no asignado en SleepManager!");
+            feeder.ResetFoodSpawn();
         }
 
         if (inspectionManager != null)
         {
             inspectionManager.ReplenishAllPrisonerItems();
+        }
+        else
+        {
+            Debug.LogWarning("InspectionManager no asignado en SleepManager!");
         }
 
         yield return StartCoroutine(ShowDayTextAndFadeFromBlack("Día " + GameManager.Instance.currentDay));
@@ -216,4 +212,3 @@ public class SleepManager : MonoBehaviour
         }
     }
 }
-

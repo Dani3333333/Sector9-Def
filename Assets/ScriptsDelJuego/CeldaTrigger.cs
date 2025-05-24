@@ -14,15 +14,18 @@ public class CeldaTrigger : MonoBehaviour
             switch (comida.tipoDeComida)
             {
                 case Food.TipoDeComida.Malo:
-                    sliderController.DecreaseHappiness(40f); // ↓↓↓
+                    sliderController.DecreaseHappiness(40f);
                     break;
                 case Food.TipoDeComida.Regular:
                     // No afecta felicidad
                     break;
                 case Food.TipoDeComida.Bueno:
-                    sliderController.IncreaseHappiness(20f); // ↑↑↑
+                    sliderController.IncreaseHappiness(20f);
                     break;
             }
+
+            // 🔥 IMPORTANTE: Marcar que fue alimentado hoy
+            sliderController.wasFedToday = true;
 
             comida.yaUsado = true;
             Destroy(other.gameObject); // O desactivarlo si prefieres
