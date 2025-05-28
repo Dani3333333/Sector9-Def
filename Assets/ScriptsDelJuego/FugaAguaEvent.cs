@@ -1,44 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-
-public class FugaAguaEvent : MonoBehaviour
+public class ActivarFugaAgua : MonoBehaviour
 {
-    public ParticleSystem fugaAgua;
-    public float duracionFuga = 10f; // Duración en segundos
-    private bool fugaYaOcurrio = false;
+    public GameObject sistemaFugaAgua;
+    public GameObject panelAdvertencia;
+
+    private bool fugaActiva = false;
 
     void OnEnable()
     {
-        GameManager.OnNuevoDia += VerificarFuga;
+        GameManager.OnNuevoDia += RevisarDia;
     }
 
     void OnDisable()
     {
-        GameManager.OnNuevoDia -= VerificarFuga;
+        GameManager.OnNuevoDia -= RevisarDia;
     }
 
-    void VerificarFuga()
+    void RevisarDia()
     {
-        if (!fugaYaOcurrio && GameManager.Instance.currentDay == 2)
+        if (GameManager.Instance.currentDay == 2)
         {
-            fugaYaOcurrio = true;
-            ActivarFuga();
+            sistemaFugaAgua.SetActive(true);
+            fugaActiva = true;
+
+            Invoke("MostrarPanelAdvertencia", 7f);
+            InvokeRepeating("ReducirFelicidadPresos", 0f, 1f); // Daño cada segundo
         }
     }
 
-    void ActivarFuga()
+    void MostrarPanelAdvertencia()
     {
-        Debug.Log("¡Fuga de agua iniciada!");
-        fugaAgua.Play();
-        StartCoroutine(DetenerFugaTrasTiempo());
+        panelAdvertencia.SetActive(true);
+        Invoke("OcultarPanel", 5f);
     }
 
-    IEnumerator DetenerFugaTrasTiempo()
+    void OcultarPanel()
     {
-        yield return new WaitForSeconds(duracionFuga);
-        fugaAgua.Stop();
-        Debug.Log("Fuga de agua reparada.");
+        panelAdvertencia.SetActive(false);
+    }
+
+    void ReducirFelicidadPresos()
+    {
+        if (!fugaActiva) return;
+
+        GameObject[] presos = GameObject.FindGameObjectsWithTag("Prisionero");
+
+        foreach (GameObject preso in presos)
+        {
+            SliderController slider = preso.GetComponentInChildren<SliderController>();
+            if (slider != null)
+            {
+                slider.DecreaseHappiness(0.1f); // Ajusta según la dificultad que quieras
+            }
+        }
+    }
+
+    public void DetenerFuga()
+    {
+        fugaActiva = false;
+        CancelInvoke("ReducirFelicidadPresos");
+        sistemaFugaAgua.SetActive(false);
     }
 }
