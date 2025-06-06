@@ -16,29 +16,16 @@ public class PrisonerPatrol : MonoBehaviour
     private bool isWalkingBack = false;
 
     public bool IsOutsideCell => isOutsideCell;
-    public bool isBeingInspected = false;
 
-    private Animator animator; 
-    private Vector3 lastPosition; 
+    private Animator animator;
 
     void Start()
     {
-        animator = GetComponent<Animator>(); // <-- NUEVO
-        lastPosition = transform.position;   // <-- NUEVO
+        animator = GetComponent<Animator>();
     }
 
     void Update()
     {
-        Vector3 currentPosition = transform.position;
-        Vector3 movement = currentPosition - lastPosition;
-
-        if (animator != null)
-        {
-            animator.SetBool("isWalking", movement.magnitude > 0.01f); // <-- CAMBIO DE ANIMACIÓN
-        }
-
-        lastPosition = currentPosition;
-
         if (isWalkingToInspection && inspectionPoint != null)
         {
             MoveTo(inspectionPoint.position, () =>
@@ -46,8 +33,11 @@ public class PrisonerPatrol : MonoBehaviour
                 isWalkingToInspection = false;
                 isOutsideCell = true;
 
-                // Girar 180º para mirar hacia la celda
-                transform.rotation = Quaternion.LookRotation(-inspectionPoint.forward); // <-- NUEVO
+                // Al llegar al inspectionPoint: poner Idle
+                animator.SetBool("isWalking", false);
+
+                // Mirar hacia dentro de la celda
+                transform.rotation = Quaternion.LookRotation(-inspectionPoint.forward);
             });
         }
         else if (isWalkingBack && cellEntrance != null)
@@ -57,6 +47,9 @@ public class PrisonerPatrol : MonoBehaviour
                 isWalkingBack = false;
                 isOutsideCell = false;
                 currentWaypointIndex = 0;
+
+                // Al volver a la celda, siempre caminar (no idle)
+                animator.SetBool("isWalking", true);
             });
         }
         else if (!isOutsideCell && !isWalkingToInspection && !isWalkingBack && waypoints.Length > 0)
@@ -71,20 +64,26 @@ public class PrisonerPatrol : MonoBehaviour
         MoveTo(target.position, () =>
         {
             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
+
+            // Siempre caminar en patrulla
+            animator.SetBool("isWalking", true);
         });
+
+        // Mientras se mueve hacia el waypoint, caminar
+        animator.SetBool("isWalking", true);
     }
 
     void MoveTo(Vector3 destination, System.Action onArrival)
     {
-        // ROTAR HACIA EL DESTINO
         Vector3 direction = (destination - transform.position).normalized;
         if (direction != Vector3.zero)
         {
             Quaternion toRotation = Quaternion.LookRotation(direction, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 5f); // <-- ROTACIÓN SUAVE
+            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 5f);
         }
 
         transform.position = Vector3.MoveTowards(transform.position, destination, speed * Time.deltaTime);
+
         if (Vector3.Distance(transform.position, destination) < 0.1f)
         {
             onArrival?.Invoke();
@@ -95,12 +94,14 @@ public class PrisonerPatrol : MonoBehaviour
     {
         isWalkingToInspection = true;
         isWalkingBack = false;
+        animator.SetBool("isWalking", true); // Comienza a caminar hacia inspectionPoint
     }
 
     public void ReturnToCell()
     {
         isWalkingBack = true;
         isWalkingToInspection = false;
+        animator.SetBool("isWalking", true); // Camina de vuelta a la celda
     }
 
     public void SetWaypoints(Transform[] newWaypoints)
@@ -114,4 +115,3 @@ public class PrisonerPatrol : MonoBehaviour
         inspectionPoint = point;
     }
 }
-

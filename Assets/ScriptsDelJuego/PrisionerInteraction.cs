@@ -25,11 +25,7 @@ public class PrisonerInteraction : MonoBehaviour
     private void OpenInspectionPanel()
     {
         inspectionPanel.SetActive(true);
-
-        if (patrolScript != null)
-        {
-            patrolScript.isBeingInspected = true; // Detiene el movimiento
-        }
+        // Ya no controlamos isBeingInspected ni movimiento
     }
 
     private void OnTriggerEnter(Collider other)
@@ -46,11 +42,6 @@ public class PrisonerInteraction : MonoBehaviour
         {
             isNearPrisoner = false;
             inspectionPanel.SetActive(false);
-
-            if (patrolScript != null)
-            {
-                patrolScript.isBeingInspected = false; // Reanuda el movimiento
-            }
         }
     }
 }
