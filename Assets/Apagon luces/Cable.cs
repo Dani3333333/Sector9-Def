@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Cable : MonoBehaviour
@@ -12,17 +10,13 @@ public class Cable : MonoBehaviour
     private Vector2 tamañoOriginal;
     private TareaCables tareaCables;
 
-
-
-    // Start is called before the first frame update
     void Start()
     {
         posicionOriginal = transform.position;
         tamañoOriginal = finalCable.size;
-        tareaCables = transform.root.gameObject.GetComponent<TareaCables>();
+        tareaCables = transform.root.GetComponent<TareaCables>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonUp(0))
@@ -39,7 +33,6 @@ public class Cable : MonoBehaviour
         ComprobarConexion();
     }
 
-   
     private void ActualizarPosicion()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -84,12 +77,11 @@ public class Cable : MonoBehaviour
             if (col.gameObject != gameObject)
             {
                 transform.position = col.transform.position;
-                Cable otroCable = col.gameObject.GetComponent<Cable>();
+                Cable otroCable = col.GetComponent<Cable>();
                 if (finalCable.color == otroCable.finalCable.color)
                 {
                     Conectar();
                     otroCable.Conectar();
-
                     tareaCables.conexionesActuales++;
                     tareaCables.ComprobarVictoria();
                 }

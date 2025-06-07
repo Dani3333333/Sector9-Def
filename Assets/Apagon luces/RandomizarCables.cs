@@ -9,13 +9,13 @@ public class RandomizarCables : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             GameObject cableActual = transform.GetChild(i).gameObject;
-            GameObject otroCable = transform.GetChild(Random.Range(0, transform.childCount)).gameObject;
+            int randomIndex = Random.Range(0, transform.childCount);
+            GameObject otroCable = transform.GetChild(randomIndex).gameObject;
 
-            Vector2 nuevaPosCableActual = otroCable.transform.position;
-            Vector2 nuevaPosOtroCable = otroCable.transform.position;
-
-            cableActual.transform.position = nuevaPosCableActual;
-            otroCable.transform.position = nuevaPosOtroCable;
+            Vector2 tempPos = cableActual.transform.position;
+            cableActual.transform.position = otroCable.transform.position;
+            otroCable.transform.position = tempPos;
         }
     }
 }
+
