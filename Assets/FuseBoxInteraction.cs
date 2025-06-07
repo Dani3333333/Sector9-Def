@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FuseBoxInteraction : MonoBehaviour
 {
-    public GameObject interactionPrompt; // El texto [E] Abrir panel
-    public GameObject cableMinigameUI;   // El panel del minijuego
+    public GameObject interactionPrompt;
+    public GameObject cableMinigameUI;
+    public GameClock gameClock; // Arrastra el GameClock desde el inspector
 
     private bool playerInRange = false;
 
@@ -20,6 +20,18 @@ public class FuseBoxInteraction : MonoBehaviour
         {
             cableMinigameUI.SetActive(true);
             interactionPrompt.SetActive(false);
+
+            LogicaPersonaje1.isInspecting = true;
+
+            if (PowerOutageController.Instance != null)
+            {
+                PowerOutageController.Instance.HidePowerOutageMessage();
+            }
+
+            if (gameClock != null)
+            {
+                gameClock.StopClock();
+            }
         }
     }
 
@@ -38,6 +50,18 @@ public class FuseBoxInteraction : MonoBehaviour
         {
             playerInRange = false;
             interactionPrompt.SetActive(false);
+        }
+    }
+
+    // LLAMAR DESDE BOTÓN "CERRAR"
+    public void CloseMinigamePanel()
+    {
+        cableMinigameUI.SetActive(false);
+        LogicaPersonaje1.isInspecting = false;
+
+        if (gameClock != null)
+        {
+            gameClock.ResumeClock();
         }
     }
 }

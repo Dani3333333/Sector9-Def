@@ -9,7 +9,7 @@ public class GameClock : MonoBehaviour
     public TextMeshProUGUI sleepWarningText;
     public TextMeshProUGUI feedingWarningText;
 
-    public GameObject introPanel; // NUEVO: referencia al panel de introducción
+    public GameObject introPanel;
 
     public float secondsPerGameDay = 600f;
     private float gameMinutesPerRealSecond;
@@ -37,7 +37,6 @@ public class GameClock : MonoBehaviour
 
     void Update()
     {
-        // Espera a que se cierre el panel de introducción
         if (!clockStarted && introPanel != null && !introPanel.activeSelf)
         {
             clockStarted = true;
@@ -146,5 +145,16 @@ public class GameClock : MonoBehaviour
     public bool CanFeedPrisoners()
     {
         return hour >= 6;
+    }
+
+    // NUEVO
+    public void StopClock()
+    {
+        clockStopped = true;
+    }
+
+    public void ResumeClock()
+    {
+        clockStopped = false;
     }
 }
