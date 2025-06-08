@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -7,16 +7,22 @@ public class Puerta : MonoBehaviour
 {
     public float speed;
     public float moveDistance;
+
     private Vector3 initialPosition;
     private Vector3 targetPosition;
     private bool isOpen = false;
-    public bool puedeAbrir;
+    private bool puedeAbrir;
 
     public TextMeshProUGUI interactionPrompt;
     public PrisonerPatrol prisonerPatrol;
 
-    [Header("D�a a partir del cual se puede abrir esta puerta (0 = siempre abierta)")]
+    [Header("Día a partir del cual se puede abrir esta puerta (0 = siempre abierta)")]
     public int diaDisponible = 0;
+
+    // 🎧 Audio
+    public AudioSource audioSource;
+    public AudioClip sonidoAbrir;
+    public AudioClip sonidoCerrar;
 
     void Start()
     {
@@ -35,9 +41,18 @@ public class Puerta : MonoBehaviour
             {
                 isOpen = !isOpen;
 
+                // 🔊 Reproducir sonido correspondiente
+                if (audioSource != null)
+                {
+                    if (isOpen && sonidoAbrir != null)
+                        audioSource.PlayOneShot(sonidoAbrir);
+                    else if (!isOpen && sonidoCerrar != null)
+                        audioSource.PlayOneShot(sonidoCerrar);
+                }
+
                 if (prisonerPatrol != null)
                 {
-                    if (isOpen && !prisonerPatrol.IsOutsideCell)
+                    if (isOpen && prisonerPatrol.IsOutsideCell)
                         prisonerPatrol.ExitCell();
                     else if (!isOpen && prisonerPatrol.IsOutsideCell)
                         prisonerPatrol.ReturnToCell();
