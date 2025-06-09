@@ -19,7 +19,7 @@ public class Puerta : MonoBehaviour
     [Header("Día a partir del cual se puede abrir esta puerta (0 = siempre abierta)")]
     public int diaDisponible = 0;
 
-    // 🎧 Audio
+    //  Audio
     public AudioSource audioSource;
     public AudioClip sonidoAbrir;
     public AudioClip sonidoCerrar;
@@ -41,7 +41,6 @@ public class Puerta : MonoBehaviour
             {
                 isOpen = !isOpen;
 
-                // 🔊 Reproducir sonido correspondiente
                 if (audioSource != null)
                 {
                     if (isOpen && sonidoAbrir != null)
@@ -52,7 +51,7 @@ public class Puerta : MonoBehaviour
 
                 if (prisonerPatrol != null)
                 {
-                    if (isOpen && prisonerPatrol.IsOutsideCell)
+                    if (isOpen && !prisonerPatrol.IsOutsideCell)
                         prisonerPatrol.ExitCell();
                     else if (!isOpen && prisonerPatrol.IsOutsideCell)
                         prisonerPatrol.ReturnToCell();
@@ -99,5 +98,20 @@ public class Puerta : MonoBehaviour
             if (interactionPrompt != null)
                 interactionPrompt.gameObject.SetActive(false);
         }
+    }
+
+    // Método público para cerrar la puerta desde otro script
+    public void CerrarPuerta()
+    {
+        isOpen = false;
+
+        if (audioSource != null && sonidoCerrar != null)
+            audioSource.PlayOneShot(sonidoCerrar);
+
+        if (prisonerPatrol != null && prisonerPatrol.IsOutsideCell)
+            prisonerPatrol.ReturnToCell();
+
+        if (interactionPrompt != null)
+            interactionPrompt.text = "[Q] Abrir puerta";
     }
 }

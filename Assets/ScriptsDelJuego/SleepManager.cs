@@ -112,10 +112,15 @@ public class SleepManager : MonoBehaviour
         sleepVideoImage.SetActive(false);
         videoPlayer.gameObject.SetActive(false);
 
+        // ?? Cerrar todas las puertas antes de cambiar de día
+        foreach (var puerta in FindObjectsOfType<Puerta>())
+        {
+            puerta.CerrarPuerta();
+        }
+
         gameClock.ResetClock();
         GameManager.Instance.NextDay();
 
-        //  AÑADIDO: reiniciar el estado del FoodFeeder para permitir dar comida
         foreach (var feeder in FindObjectsOfType<FoodFeeder>())
         {
             feeder.ResetFoodSpawn();
