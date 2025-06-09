@@ -3,24 +3,22 @@ using UnityEngine;
 public class FuseBoxInteraction : MonoBehaviour
 {
     public GameObject interactionPrompt;
-    public GameObject cableMinigameUI;
-    public GameClock gameClock; // Arrastra el GameClock desde el inspector
+    public GameClock gameClock;
+    public GameObject cablesPanel; //
 
     private bool playerInRange = false;
 
     void Start()
     {
         interactionPrompt.SetActive(false);
-        cableMinigameUI.SetActive(false);
+        if (cablesPanel != null)
+            cablesPanel.SetActive(false); // 
     }
 
     void Update()
     {
         if (playerInRange && Input.GetKeyDown(KeyCode.E))
         {
-            cableMinigameUI.SetActive(true);
-            interactionPrompt.SetActive(false);
-
             LogicaPersonaje1.isInspecting = true;
 
             if (PowerOutageController.Instance != null)
@@ -31,6 +29,13 @@ public class FuseBoxInteraction : MonoBehaviour
             if (gameClock != null)
             {
                 gameClock.StopClock();
+            }
+
+            if (cablesPanel != null)
+            {
+                cablesPanel.SetActive(true); // 
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
         }
     }
@@ -50,18 +55,6 @@ public class FuseBoxInteraction : MonoBehaviour
         {
             playerInRange = false;
             interactionPrompt.SetActive(false);
-        }
-    }
-
-    // LLAMAR DESDE BOTÓN "CERRAR"
-    public void CloseMinigamePanel()
-    {
-        cableMinigameUI.SetActive(false);
-        LogicaPersonaje1.isInspecting = false;
-
-        if (gameClock != null)
-        {
-            gameClock.ResumeClock();
         }
     }
 }

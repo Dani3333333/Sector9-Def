@@ -1,88 +1,71 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class PowerOutageController : MonoBehaviour
 {
-    public static PowerOutageController Instance; // NUEVO
+    public static PowerOutageController Instance;
 
     public Light[] sceneLights;
     public SliderController[] prisoners;
-
     public GameObject fuseBox;
     public TextMeshProUGUI powerOutageMessage;
     public float minDelay = 10f;
     public float maxDelay = 20f;
-    public bool isInspecting = false;
 
     private bool lightsOut = false;
 
     void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Persistir si aún necesitas entre escenas
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
     {
-        powerOutageMessage.text = "";
-        fuseBox.SetActive(false);
-        StartCoroutine(TriggerPowerOutageRoutine());
+        if (SceneManager.GetActiveScene().name == "Sector 9")
+        {
+            powerOutageMessage.text = "";
+            fuseBox.SetActive(false);
+            StartCoroutine(TriggerPowerOutageRoutine());
+        }
     }
 
-    IEnumerator TriggerPowerOutageRoutine()
+    System.Collections.IEnumerator TriggerPowerOutageRoutine()
     {
-        while (true)
-        {
-            float waitTime = Random.Range(minDelay, maxDelay);
-            yield return new WaitForSeconds(waitTime);
-
-            if (!isInspecting && !lightsOut)
-            {
-                TriggerLightsOut();
-            }
-        }
+        yield return new WaitForSeconds(Random.Range(minDelay, maxDelay));
+        TriggerLightsOut();
     }
 
     void TriggerLightsOut()
     {
         lightsOut = true;
 
-        foreach (Light light in sceneLights)
-        {
-            light.enabled = false;
-        }
+        foreach (Light l in sceneLights)
+            l.enabled = false;
 
-        powerOutageMessage.text = "¡Apagón! Ayuda a arreglar los cables o los prisioneros perderán felicidad.";
+        powerOutageMessage.text = "¡Apagón! Pulsa E para arreglar los cables.";
         fuseBox.SetActive(true);
-
-        StartCoroutine(LoseHappinessWhileDark());
-    }
-
-    IEnumerator LoseHappinessWhileDark()
-    {
-        while (lightsOut)
-        {
-            foreach (SliderController sc in prisoners)
-            {
-                if (sc.gameObject.activeInHierarchy)
-                {
-                    sc.DecreaseHappiness(5f);
-                }
-            }
-            yield return new WaitForSeconds(10f);
-        }
     }
 
     public void RestoreLights()
     {
         lightsOut = false;
 
-        foreach (Light light in sceneLights)
-        {
-            light.enabled = true;
-        }
+        foreach (Light l in sceneLights)
+            l.enabled = true;
 
+        powerOutageMessage.text = "";
+        fuseBox.SetActive(false);
+
+        // Restaurar felicidad a todos los prisioneros
         foreach (SliderController sc in prisoners)
         {
             if (sc.gameObject.activeInHierarchy)
@@ -90,14 +73,11 @@ public class PowerOutageController : MonoBehaviour
                 sc.IncreaseHappiness(10f);
             }
         }
-
-        powerOutageMessage.text = "";
-        fuseBox.SetActive(false);
     }
 
-    // NUEVO: Ocultar mensaje desde otro script
     public void HidePowerOutageMessage()
     {
         powerOutageMessage.text = "";
     }
+
 }

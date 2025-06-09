@@ -129,6 +129,8 @@ public class SleepManager : MonoBehaviour
         if (inspectionManager != null)
         {
             inspectionManager.ReplenishAllPrisonerItems();
+            inspectionManager.CheckForEscapesAndRemovePrisoners();
+
         }
         else
         {

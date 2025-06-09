@@ -1,7 +1,19 @@
 fileFormatVersion: 2
-guid: 5850987ac03011543809c79094851cf2
+guid: 1e873c02f93a78545a101238f47e6c8f
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -4612780052235628664
+    second: luz
+  - first:
+      213: 6337646991719243360
+    second: cuerpo-cable
+  - first:
+      213: -5451783303251534561
+    second: final-cable
+  - first:
+      213: 3506576436694382158
+    second: conector
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -39,7 +51,7 @@ TextureImporter:
     mipBias: 0
     wrapU: 1
     wrapV: 1
-    wrapW: 0
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
@@ -65,7 +77,7 @@ TextureImporter:
   ignorePngGamma: 0
   applyGammaDecoding: 0
   swizzle: 50462976
-  cookieLightType: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -85,7 +97,20 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Windows Store Apps
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -98,7 +123,20 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -124,8 +162,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 82dd4b26ea3214948804158059a7b1bf
-      internalID: -1106256069
+      spriteID: 88fcc776bfc1cffb0800000000000000
+      internalID: -4612780052235628664
       vertices: []
       indices: 
       edges: []
@@ -145,8 +183,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0981dbbc7d32b86449c7375de469748a
-      internalID: -988110771
+      spriteID: 06e9f355c58d3f750800000000000000
+      internalID: 6337646991719243360
       vertices: []
       indices: 
       edges: []
@@ -161,13 +199,13 @@ TextureImporter:
         height: 32
       alignment: 5
       pivot: {x: 1, y: 0.5}
-      border: {x: 18, y: 0, z: 20, w: 0}
+      border: {x: 21, y: 0, z: 16, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd417ef59712dda498db4779cbcb8e96
-      internalID: -1690173815
+      spriteID: f1d594178ff5754b0800000000000000
+      internalID: -5451783303251534561
       vertices: []
       indices: 
       edges: []
@@ -187,8 +225,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 830877d546b302b45a6e91b4e40e2351
-      internalID: 1218830811
+      spriteID: e467ce6c0bcd9a030800000000000000
+      internalID: 3506576436694382158
       vertices: []
       indices: 
       edges: []
@@ -196,7 +234,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: aed208e13072df244a9fe030aa95fcb5
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -204,10 +242,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      conector: 1218830811
-      cuerpo-cable: -988110771
-      final-cable: -1690173815
-      luz: -1106256069
+      conector: 3506576436694382158
+      cuerpo-cable: 6337646991719243360
+      final-cable: -5451783303251534561
+      luz: -4612780052235628664
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

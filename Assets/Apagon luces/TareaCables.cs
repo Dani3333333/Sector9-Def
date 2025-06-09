@@ -1,20 +1,39 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class TareaCables : MonoBehaviour
 {
     public int conexionesActuales;
-
-    public PowerOutageController powerOutageController;
+    public GameObject cablesPanel; // 
 
     public void ComprobarVictoria()
     {
         if (conexionesActuales == 4)
         {
-            powerOutageController.RestoreLights();
-            Destroy(this.gameObject, 1f); // Cierra el panel del minijuego
+            CerrarMinijuego();
         }
     }
-}
 
+    void CerrarMinijuego()
+    {
+        if (PowerOutageController.Instance != null)
+        {
+            PowerOutageController.Instance.RestoreLights();
+        }
+
+        if (cablesPanel != null)
+        {
+            cablesPanel.SetActive(false); // 
+        }
+
+        GameClock clock = FindObjectOfType<GameClock>();
+        if (clock != null)
+        {
+            clock.ResumeClock();
+        }
+
+        LogicaPersonaje1.isInspecting = false;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+}

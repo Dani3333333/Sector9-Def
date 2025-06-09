@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 public class SliderController : MonoBehaviour
 {
@@ -9,27 +11,38 @@ public class SliderController : MonoBehaviour
     public Text valueText;
     public Image fillImage;
 
-    // Para las caritas
-    public Sprite happyFace;         // Carita feliz
-    public Sprite neutralFace;       // Carita neutral
-    public Sprite sadFace;           // Carita triste
-    public Image faceImage;          // Imagen de la carita (feliz, neutral, triste) que se mueve
+    public Sprite happyFace;
+    public Sprite neutralFace;
+    public Sprite sadFace;
+    public Image faceImage;
 
     public float animationSpeed = 5f;
 
-    public float targetHappiness = 100f;  // Valor que queremos alcanzar
-    public float currentHappiness = 100f; // Valor actual mostrado
+    public float targetHappiness = 100f;
+    public float currentHappiness = 100f;
 
     [HideInInspector]
     public bool wasFedToday = false;
 
+    public GameObject prisonerRoot;
+
+    public TextMeshProUGUI deathMessageText;  // Cambiado a TextMeshProUGUI
+    public float deathMessageDuration = 4f;
+
+    private bool hasDied = false;
+
+    private readonly string[] deathMessages = new string[]
+    {
+        "No has cuidado bien a tu prisionero, ha muerto...",
+        "El prisionero se ha rendido ante la desesperación.",
+        "Su falta de felicidad le ha llevado al fin."
+    };
+
     void Update()
     {
-        // Mantener siempre de cara a la cámara
         transform.LookAt(Camera.main.transform);
         valueText.transform.rotation = Quaternion.LookRotation(valueText.transform.position - Camera.main.transform.position);
 
-        // Animar suavemente el valor del slider hacia el objetivo
         if (Mathf.Abs(slider.value - targetHappiness) > 0.01f)
         {
             slider.value = Mathf.Lerp(slider.value, targetHappiness, Time.deltaTime * animationSpeed);
@@ -37,6 +50,12 @@ public class SliderController : MonoBehaviour
         }
 
         MoveFaceImage();
+
+        if (!hasDied && targetHappiness <= 0f)
+        {
+            hasDied = true;
+            StartCoroutine(HandleDeath());
+        }
     }
 
     public void DecreaseHappiness(float amount)
@@ -53,7 +72,6 @@ public class SliderController : MonoBehaviour
     {
         valueText.text = $"Felicidad: {Mathf.RoundToInt(slider.value)}%";
 
-        // Color de la barra
         if (slider.value >= 80f)
             fillImage.color = Color.green;
         else if (slider.value >= 50f)
@@ -61,19 +79,12 @@ public class SliderController : MonoBehaviour
         else
             fillImage.color = Color.red;
 
-        // Cambiar la carita
         if (slider.value >= 80f)
-        {
             faceImage.sprite = happyFace;
-        }
         else if (slider.value >= 50f)
-        {
             faceImage.sprite = neutralFace;
-        }
         else
-        {
             faceImage.sprite = sadFace;
-        }
     }
 
     void MoveFaceImage()
@@ -85,21 +96,40 @@ public class SliderController : MonoBehaviour
         faceImage.transform.localPosition = new Vector3(xPosition, faceImage.transform.localPosition.y, faceImage.transform.localPosition.z);
     }
 
-    // Método para obtener el valor actual de felicidad
     public float GetCurrentHappiness()
     {
         return slider.value;
     }
 
-    // Método para comprobar si el preso ha sido alimentado y penalizar si no lo ha sido
     public void CheckIfFedAndPenalize()
     {
         if (!wasFedToday)
         {
-            DecreaseHappiness(15f); // Penalización por no recibir comida (ajustar el valor como prefieras)
+            DecreaseHappiness(15f);
         }
 
-        // Resetear el flag para el nuevo día
         wasFedToday = false;
+    }
+
+    IEnumerator HandleDeath()
+    {
+        if (deathMessageText != null)
+        {
+            int index = Random.Range(0, deathMessages.Length);
+            deathMessageText.text = deathMessages[index];
+            deathMessageText.enabled = true;
+        }
+
+        yield return new WaitForSeconds(deathMessageDuration);
+
+        if (deathMessageText != null)
+        {
+            deathMessageText.enabled = false;
+        }
+
+        if (prisonerRoot != null)
+            Destroy(prisonerRoot);
+        else
+            Destroy(gameObject);
     }
 }

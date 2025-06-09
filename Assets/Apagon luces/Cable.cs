@@ -1,42 +1,44 @@
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Cable : MonoBehaviour
 {
+
     public SpriteRenderer finalCable;
     public GameObject luz;
 
     private Vector2 posicionOriginal;
-    private Vector2 tama�oOriginal;
+    private Vector2 tamañoOriginal;
     private TareaCables tareaCables;
-
+    
     void Start()
     {
         posicionOriginal = transform.position;
-        tama�oOriginal = finalCable.size;
-        tareaCables = transform.root.GetComponent<TareaCables>();
+        tamañoOriginal = finalCable.size;
+        tareaCables = transform.root.gameObject.GetComponent<TareaCables>();
     }
 
     void Update()
     {
         if (Input.GetMouseButtonUp(0))
         {
-            Reiniciar();
+                Reiniciar();
         }
     }
 
     private void OnMouseDrag()
     {
         ActualizarPosicion();
-        ActualizarRotacion();
-        ActualizarTama�o();
         ComprobarConexion();
+        ActualizarRotacion();
+        ActualizarTamaño();
     }
 
     private void ActualizarPosicion()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        transform.position = new Vector3(mousePosition.x, mousePosition.y);
+        transform.position = mousePosition;
     }
 
     private void ActualizarRotacion()
@@ -51,7 +53,7 @@ public class Cable : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, angulo);
     }
 
-    private void ActualizarTama�o()
+    private void ActualizarTamaño()
     {
         Vector2 posicionActual = transform.position;
         Vector2 puntoOrigen = transform.parent.position;
@@ -65,23 +67,28 @@ public class Cable : MonoBehaviour
     {
         transform.position = posicionOriginal;
         transform.rotation = Quaternion.identity;
-        finalCable.size = new Vector2(tama�oOriginal.x, tama�oOriginal.y);
+        finalCable.size = tamañoOriginal;
     }
 
-    public void ComprobarConexion()
+    private void ComprobarConexion()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 0.2f);
 
         foreach (Collider2D col in colliders)
         {
+            // No procesamos el collider del cable que estamos moviendo.
             if (col.gameObject != gameObject)
             {
                 transform.position = col.transform.position;
-                Cable otroCable = col.GetComponent<Cable>();
+
+                Cable otroCable = col.gameObject.GetComponent<Cable>();
+
                 if (finalCable.color == otroCable.finalCable.color)
                 {
+                    // Conexión correcta.
                     Conectar();
                     otroCable.Conectar();
+
                     tareaCables.conexionesActuales++;
                     tareaCables.ComprobarVictoria();
                 }

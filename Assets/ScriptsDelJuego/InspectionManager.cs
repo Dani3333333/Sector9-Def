@@ -24,22 +24,30 @@ public class InspectionManager : MonoBehaviour
     private string currentExtremity = "";
     private PrisonerPatrol currentPrisoner;
 
+    [Header("Prisioneros a revisar manualmente")]
+    public List<GameObject> prisonersToCheck;
+
     private List<string> possibleItems = new List<string>
     {
         // PELIGROSOS
         "Cuchillo", "Navaja", "Llave inglesa", "Destornillador", "Tijeras", "Cuerda", "Cable", "Batería", "Aguja afilada", "Barra metálica",
+        "Sierra", "Martillo", "Punzón", "Cadena", "Tubo de metal", "Vidrio roto", "Cuchilla de afeitar", "Clavos grandes", "Lima afilada", "Palo puntiagudo",
 
         // NO PELIGROSOS
-        "Mechero", "Encendedor", "Chicle", "Goma de mascar", "Revista", "Papel", "Bolígrafo", "Espejo roto", "CD", "Tarjeta de crédito falsa",
-        "Carta escondida", "Dinero falsificado", "Piedra pequeña", "Cinta adhesiva", "Grapadora", "Papel de fumar",
+        "Chicle", "Revista", "Papel", "Bolígrafo", "CD", "Tarjeta de crédito falsa",
+        "Carta de la novia", "Dinero falsificado", "Piedra pequeña", "Cinta adhesiva", "Grapadora",
         "Comida escondida", "Cepillo de dientes", "Vaso de plástico", "Calcetines extra", "Papel higiénico",
-        "Peine", "Pequeño espejo", "Móvil escondido", "Tabaco", "Barra de jabón", "Pastillas sospechosas"
+        "Peine", "Pequeño espejo", "Móvil escondido","Barra de jabón",
     };
 
     private HashSet<string> dangerousItems = new HashSet<string>
     {
-        "Cuchillo", "Navaja", "Llave inglesa", "Destornillador", "Tijeras", "Cuerda", "Cable", "Batería", "Aguja afilada", "Barra metálica"
+        "Cuchillo", "Navaja", "Llave inglesa", "Destornillador", "Tijeras", "Cuerda", "Cable", "Batería", "Aguja afilada", "Barra metálica",
+        "Sierra", "Martillo", "Punzón", "Cadena", "Tubo de metal", "Vidrio roto", "Cuchilla de afeitar", "Clavos grandes", "Lima afilada", "Palo puntiagudo"
     };
+
+    public TextMeshProUGUI escapeMessageText;  // Asignar en inspector
+    public float escapeMessageDuration = 4f;
 
     void Start()
     {
@@ -54,6 +62,9 @@ public class InspectionManager : MonoBehaviour
         extremityPanel.SetActive(false);
         itemsPanel.SetActive(false);
         if (interactionPrompt != null) interactionPrompt.gameObject.SetActive(false);
+
+        if (escapeMessageText != null)
+            escapeMessageText.enabled = false;
     }
 
     void Update()
@@ -289,4 +300,66 @@ public class InspectionManager : MonoBehaviour
             prisonerItems[prisoner] = GenerateRandomItemsPerPrisoner();
         }
     }
+
+    // NUEVO MÉTODO PARA MANEJAR ESCAPES AL CAMBIO DE DÍA
+    public void CheckForEscapesAndRemovePrisoners()
+    {
+        List<PrisonerPatrol> prisonersToRemove = new List<PrisonerPatrol>();
+
+        foreach (var prisonerObj in prisonersToCheck)
+        {
+            if (prisonerObj == null) continue;
+            if (!prisonerObj.activeInHierarchy) continue;  // <-- Solo prisioneros activos
+
+            PrisonerPatrol prisoner = prisonerObj.GetComponent<PrisonerPatrol>();
+            if (prisoner == null) continue;
+
+            if (!prisonerItems.TryGetValue(prisoner, out var itemsPerExtremity))
+                continue;
+
+            bool hasDangerousItem = false;
+
+            foreach (var extremityItems in itemsPerExtremity.Values)
+            {
+                foreach (var item in extremityItems)
+                {
+                    if (dangerousItems.Contains(item))
+                    {
+                        hasDangerousItem = true;
+                        break;
+                    }
+                }
+                if (hasDangerousItem) break;
+            }
+
+            if (hasDangerousItem)
+            {
+                prisonersToRemove.Add(prisoner);
+            }
+        }
+
+        if (prisonersToRemove.Count > 0)
+            StartCoroutine(RemoveEscapedPrisoners(prisonersToRemove));
+    }
+
+    private IEnumerator RemoveEscapedPrisoners(List<PrisonerPatrol> escapedPrisoners)
+    {
+        foreach (var prisoner in escapedPrisoners)
+        {
+            if (escapeMessageText != null)
+            {
+                escapeMessageText.text = $"No has revisado correctamente al prisionero {prisoner.name}, y se ha escapado.";
+                escapeMessageText.enabled = true;
+            }
+
+            yield return new WaitForSeconds(3f);
+
+            if (escapeMessageText != null)
+                escapeMessageText.enabled = false;
+
+            prisonerItems.Remove(prisoner);
+            Destroy(prisoner.gameObject);
+        }
+    }
+
 }
