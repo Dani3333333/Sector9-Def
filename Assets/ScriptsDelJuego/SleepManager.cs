@@ -112,7 +112,7 @@ public class SleepManager : MonoBehaviour
         sleepVideoImage.SetActive(false);
         videoPlayer.gameObject.SetActive(false);
 
-        // ?? Cerrar todas las puertas antes de cambiar de día
+        //  Cerrar todas las puertas antes de cambiar de día
         foreach (var puerta in FindObjectsOfType<Puerta>())
         {
             puerta.CerrarPuerta();
