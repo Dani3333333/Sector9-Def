@@ -51,7 +51,7 @@ public class ActivarFugaAgua : MonoBehaviour
             SliderController slider = preso.GetComponentInChildren<SliderController>();
             if (slider != null)
             {
-                slider.DecreaseHappiness(0.1f); // Ajusta según la dificultad que quieras
+                slider.DecreaseHappiness(0.1f); // Ajusta según dificultad
             }
         }
     }
@@ -61,5 +61,6 @@ public class ActivarFugaAgua : MonoBehaviour
         fugaActiva = false;
         CancelInvoke("ReducirFelicidadPresos");
         sistemaFugaAgua.SetActive(false);
+        Debug.Log(" Fuga detenida desde el puzzle.");
     }
 }
