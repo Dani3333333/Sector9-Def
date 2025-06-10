@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -8,6 +7,10 @@ public class IntroManager : MonoBehaviour
     public GameObject introPanel;
     public TextMeshProUGUI introText;
     public float typeSpeed = 0.04f;
+
+    [Header("Audio ambiente de tipeo")]
+    public AudioSource typingAudioSource; // Asigna un AudioSource en el Inspector
+    public AudioClip typingClip;          // Clip de sonido ambiente (tecleado suave)
 
     private string fullIntroText =
 @"Has despertado en la <b>Nave del Sector 9</b>.
@@ -32,6 +35,15 @@ Su valor crecerá… o se desmoronará contigo.
     void Start()
     {
         introPanel.SetActive(true);
+
+        // Inicia sonido de tipeo en bucle si está todo asignado
+        if (typingAudioSource != null && typingClip != null)
+        {
+            typingAudioSource.clip = typingClip;
+            typingAudioSource.loop = true;
+            typingAudioSource.Play();
+        }
+
         StartCoroutine(TypeText());
     }
 
@@ -52,7 +64,13 @@ Su valor crecerá… o se desmoronará contigo.
             introText.text += c;
             yield return new WaitForSeconds(typeSpeed);
         }
+
         finishedTyping = true;
+
+        // Detiene el sonido ambiente de tipeo
+        if (typingAudioSource != null && typingAudioSource.isPlaying)
+        {
+            typingAudioSource.Stop();
+        }
     }
 }
-

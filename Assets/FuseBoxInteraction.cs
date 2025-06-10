@@ -3,40 +3,32 @@ using UnityEngine;
 public class FuseBoxInteraction : MonoBehaviour
 {
     public GameObject interactionPrompt;
-    public GameClock gameClock;
-    public GameObject cablesPanel; //
 
     private bool playerInRange = false;
 
     void Start()
     {
         interactionPrompt.SetActive(false);
-        if (cablesPanel != null)
-            cablesPanel.SetActive(false); // 
     }
 
     void Update()
     {
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        // Solo permitir interacción si las luces están apagadas y el jugador está cerca
+        if (playerInRange && PowerOutageController.Instance != null && PowerOutageController.Instance.IsLightsOut())
         {
-            LogicaPersonaje1.isInspecting = true;
+            if (!interactionPrompt.activeSelf)
+                interactionPrompt.SetActive(true);
 
-            if (PowerOutageController.Instance != null)
+            if (Input.GetKeyDown(KeyCode.E))
             {
-                PowerOutageController.Instance.HidePowerOutageMessage();
+                PowerOutageController.Instance.RegisterFuseBoxHit();
             }
-
-            if (gameClock != null)
-            {
-                gameClock.StopClock();
-            }
-
-            if (cablesPanel != null)
-            {
-                cablesPanel.SetActive(true); // 
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
+        }
+        else
+        {
+            // Si el jugador no está cerca o las luces están encendidas, ocultar prompt
+            if (interactionPrompt.activeSelf)
+                interactionPrompt.SetActive(false);
         }
     }
 
@@ -45,7 +37,10 @@ public class FuseBoxInteraction : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
-            interactionPrompt.SetActive(true);
+
+            // Mostrar prompt solo si luces apagadas
+            if (PowerOutageController.Instance != null && PowerOutageController.Instance.IsLightsOut())
+                interactionPrompt.SetActive(true);
         }
     }
 

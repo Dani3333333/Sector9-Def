@@ -1,12 +1,16 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TutorialTaskNavigator : MonoBehaviour
 {
-    public static TutorialTaskNavigator Instance; // <-- para poder preguntarle desde fuera
-    public List<Toggle> taskToggles; // Toggles de cada tarea
+    public static TutorialTaskNavigator Instance;
+
+    public List<GameObject> taskPanels;     // Los paneles que se mostrarán como diapositivas
+    public List<Toggle> taskToggles;        // Los toggles que se activan con Enter
+
+    public TutorialPanelReader panelReader; // Referencia al panel lector para cerrar
+
     private int currentIndex = 0;
 
     void Awake()
@@ -17,68 +21,67 @@ public class TutorialTaskNavigator : MonoBehaviour
 
     void Start()
     {
-        // Dejar todos los toggles desmarcados al iniciar
+        // Desactivar todos los paneles, activar solo el primero
+        for (int i = 0; i < taskPanels.Count; i++)
+        {
+            taskPanels[i].SetActive(i == 0);
+        }
+
+        // Desmarcar todos los toggles
         foreach (var toggle in taskToggles)
         {
             toggle.isOn = false;
-        }
-
-        if (taskToggles.Count > 0)
-        {
-            HighlightToggle(currentIndex);
         }
     }
 
     void Update()
     {
-        if (!gameObject.activeInHierarchy) return; // No hacer nada si el panel está cerrado
+        if (!gameObject.activeInHierarchy) return;
 
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            MoveSelection(1);
+            MoveToPanel(1);
         }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            MoveSelection(-1);
+            MoveToPanel(-1);
         }
-        else if (Input.GetKeyDown(KeyCode.Return)) // Enter
+        else if (Input.GetKeyDown(KeyCode.Return))
         {
             ToggleCurrent();
         }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            if (panelReader != null)
+            {
+                panelReader.CloseDetailPanel();
+            }
+        }
     }
 
-    void MoveSelection(int direction)
+    void MoveToPanel(int direction)
     {
-        UnhighlightToggle(currentIndex);
+        int newIndex = currentIndex + direction;
 
-        currentIndex += direction;
-        if (currentIndex < 0) currentIndex = taskToggles.Count - 1;
-        if (currentIndex >= taskToggles.Count) currentIndex = 0;
+        if (newIndex < 0 || newIndex >= taskPanels.Count)
+        {
+            return; // No moverse fuera de los límites
+        }
 
-        HighlightToggle(currentIndex);
-    }
-
-    void HighlightToggle(int index)
-    {
-        var colors = taskToggles[index].colors;
-        colors.normalColor = Color.yellow; // Resaltar seleccionado
-        taskToggles[index].colors = colors;
-    }
-
-    void UnhighlightToggle(int index)
-    {
-        var colors = taskToggles[index].colors;
-        colors.normalColor = Color.white; // Quitar resalte
-        taskToggles[index].colors = colors;
+        taskPanels[currentIndex].SetActive(false);
+        currentIndex = newIndex;
+        taskPanels[currentIndex].SetActive(true);
     }
 
     void ToggleCurrent()
     {
-        var toggle = taskToggles[currentIndex];
-        toggle.isOn = !toggle.isOn;
+        if (currentIndex >= 0 && currentIndex < taskToggles.Count)
+        {
+            var toggle = taskToggles[currentIndex];
+            toggle.isOn = !toggle.isOn;
+        }
     }
 
-    //Función para consultar si TODAS las tareas están completas
     public bool AreAllTasksCompleted()
     {
         foreach (var toggle in taskToggles)
@@ -87,5 +90,16 @@ public class TutorialTaskNavigator : MonoBehaviour
                 return false;
         }
         return true;
+    }
+
+    public void ResetToFirstPanel()
+    {
+        for (int i = 0; i < taskPanels.Count; i++)
+        {
+            bool isActive = (i == 0);
+            taskPanels[i].SetActive(isActive);
+            Debug.Log($"Panel {i} ({taskPanels[i].name}) activado: {isActive}");
+        }
+        currentIndex = 0;
     }
 }

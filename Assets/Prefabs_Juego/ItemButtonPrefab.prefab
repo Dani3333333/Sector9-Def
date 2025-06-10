@@ -66,7 +66,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 0cf3ec5c3b11dfc4fbadb658327aad21, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -146,8 +146,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 46dfb574ebd7d9a4eb80e939f33c8c85, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -179,8 +179,8 @@ MonoBehaviour:
   m_Colors:
     m_NormalColor: {r: 0.89433956, g: 0.89433956, b: 0.89433956, a: 1}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_PressedColor: {r: 1, g: 0.9056399, b: 0, a: 1}
-    m_SelectedColor: {r: 1, g: 0, b: 0.08291292, a: 1}
+    m_PressedColor: {r: 0.008098972, g: 0.24528301, b: 0.047164604, a: 1}
+    m_SelectedColor: {r: 0, g: 1, b: 0.0917871, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1

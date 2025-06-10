@@ -1,13 +1,15 @@
 using UnityEngine;
-using UnityEngine.UI; // <- Añadimos esto para usar Toggle
+using UnityEngine.UI;
 
 public class TutorialPanelReader : MonoBehaviour
 {
-    public GameObject detailPanel; // Panel con la info detallada
+    public GameObject detailPanel; // Panel con la info detallada (padre de los paneles de tareas)
     public GameObject promptUI;    // Texto tipo "[E] Leer detalladamente"
 
+    [HideInInspector]
+    public bool panelOpen = false;
+
     private bool playerInZone = false;
-    private bool panelOpen = false;
 
     void Start()
     {
@@ -15,11 +17,16 @@ public class TutorialPanelReader : MonoBehaviour
         {
             detailPanel.SetActive(false);
 
-            //  Desactivar todos los toggles dentro del panel al iniciar
-            Toggle[] toggles = detailPanel.GetComponentsInChildren<Toggle>();
+            // Desactivar todos los toggles y paneles hijos al iniciar
+            Toggle[] toggles = detailPanel.GetComponentsInChildren<Toggle>(true);
             foreach (var toggle in toggles)
             {
                 toggle.isOn = false;
+            }
+
+            foreach (Transform child in detailPanel.transform)
+            {
+                child.gameObject.SetActive(false);
             }
         }
 
@@ -29,10 +36,10 @@ public class TutorialPanelReader : MonoBehaviour
 
     void Update()
     {
-        // Primero, comprobar si estamos en el día 1 o superior
         if (GameManager.Instance != null && GameManager.Instance.currentDay >= 1)
         {
-            gameObject.SetActive(false); // O Destroy(gameObject); si prefieres eliminarlo
+            gameObject.SetActive(false);
+            return;
         }
 
         if (playerInZone && Input.GetKeyDown(KeyCode.E))
@@ -45,19 +52,36 @@ public class TutorialPanelReader : MonoBehaviour
 
             LogicaPersonaje1.isInspecting = panelOpen;
         }
-
-        if (panelOpen && Input.GetKeyDown(KeyCode.Backspace))
-        {
-            panelOpen = false;
-            detailPanel.SetActive(false);
-
-            if (promptUI != null && playerInZone)
-                promptUI.SetActive(true);
-
-            LogicaPersonaje1.isInspecting = false;
-        }
     }
 
+    public void CloseDetailPanel()
+    {
+        Debug.Log("CloseDetailPanel llamado");
+
+        panelOpen = false;
+
+        if (detailPanel != null)
+        {
+            foreach (Transform child in detailPanel.transform)
+            {
+                Debug.Log("Desactivando panel hijo: " + child.name);
+                child.gameObject.SetActive(false);
+            }
+
+            detailPanel.SetActive(false);
+            Debug.Log("detailPanel desactivado");
+        }
+
+        if (promptUI != null && playerInZone)
+            promptUI.SetActive(true);
+
+        LogicaPersonaje1.isInspecting = false;
+
+        if (TutorialTaskNavigator.Instance != null)
+        {
+            TutorialTaskNavigator.Instance.ResetToFirstPanel();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {

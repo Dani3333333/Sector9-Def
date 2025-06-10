@@ -32,7 +32,9 @@ public class SleepManager : MonoBehaviour
     public GameObject sleepText;
 
     private bool canSleep = false;
-    private bool isSleeping = false;
+    public bool isSleeping = false;
+
+    public static bool IsPlayerSleeping { get; private set; }
 
     void Start()
     {
@@ -86,6 +88,8 @@ public class SleepManager : MonoBehaviour
     IEnumerator SleepWithFadeAndVideoRoutine()
     {
         isSleeping = true;
+        IsPlayerSleeping = true;
+
         hud.SetActive(false);
         sleepPromptText.SetActive(false);
 
@@ -112,25 +116,19 @@ public class SleepManager : MonoBehaviour
         sleepVideoImage.SetActive(false);
         videoPlayer.gameObject.SetActive(false);
 
-        //  Cerrar todas las puertas antes de cambiar de día
         foreach (var puerta in FindObjectsOfType<Puerta>())
-        {
             puerta.CerrarPuerta();
-        }
 
         gameClock.ResetClock();
         GameManager.Instance.NextDay();
 
         foreach (var feeder in FindObjectsOfType<FoodFeeder>())
-        {
             feeder.ResetFoodSpawn();
-        }
 
         if (inspectionManager != null)
         {
             inspectionManager.ReplenishAllPrisonerItems();
             inspectionManager.CheckForEscapesAndRemovePrisoners();
-
         }
         else
         {
@@ -143,6 +141,7 @@ public class SleepManager : MonoBehaviour
         FindObjectOfType<PrisonerManager>().EnablePrisonerForDay(GameManager.Instance.currentDay);
 
         isSleeping = false;
+        IsPlayerSleeping = false;
         canSleep = true;
     }
 
@@ -183,9 +182,7 @@ public class SleepManager : MonoBehaviour
         fadePanel.color = new Color(0f, 0f, 0f, 0f);
         dayText.gameObject.SetActive(false);
 
-        isSleeping = false;
         hud.SetActive(true);
-        canSleep = true;
     }
 
     IEnumerator FadeToBlack()
